@@ -1,0 +1,2169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 单文件打包于 2026-09-30 19:14 -->
+<title>A_Home · 工作台</title>
+<style>
+/* ==================== 令牌 ==================== */
+:root{
+  --bg:#eef0f3;
+  --card:#ffffff;
+  --card2:#fafbfc;
+  --line:#e6e8ec;
+  --line2:#eef0f3;
+  --tx:#20242b;
+  --tx2:#5a616b;
+  --tx3:#98a0ab;
+  --blue:#4a86e8;
+  --blue-bg:#eaf1fd;
+  --green:#3fb27f;
+  --orange:#e08a3c;
+  --purple:#8b7ad6;
+  --red:#e05a5a;
+  --pomo:#b8763f;
+  --r:12px;
+  --sh:0 1px 2px rgba(20,28,40,.05), 0 4px 14px rgba(20,28,40,.05);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--tx);
+  font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.root{max-width:1680px;margin:0 auto;padding:14px;display:flex;flex-direction:column;gap:12px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+a{color:var(--blue);text-decoration:none}
+.grow{flex:1}
+
+/* ==================== 横幅 ==================== */
+.banner{
+  position:relative;height:170px;border-radius:var(--r);overflow:hidden;
+  background:
+    radial-gradient(120% 160% at 12% 8%, #bfe3f5 0%, #a8d4ef 26%, #8fc4e6 48%, transparent 68%),
+    radial-gradient(90% 130% at 82% 12%, #ffe9b8 0%, #ffd98a 30%, transparent 62%),
+    radial-gradient(140% 150% at 50% 118%, #9fcf72 0%, #7bb84f 40%, #63a03c 68%, transparent 88%),
+    linear-gradient(180deg,#a9d8f0 0%,#c8e6c0 52%,#8dc45f 100%);
+  box-shadow:var(--sh);
+  display:flex;align-items:center;justify-content:center;
+}
+.banner::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.06),rgba(0,0,0,.16));
+  pointer-events:none;
+}
+.banner.has-img::after{background:linear-gradient(180deg,rgba(0,0,0,.10),rgba(0,0,0,.28))}
+.banner-motto{
+  position:relative;z-index:2;color:#fff;font-size:40px;font-weight:800;
+  letter-spacing:.14em;text-shadow:0 2px 14px rgba(0,0,0,.35), 0 1px 2px rgba(0,0,0,.3);
+  cursor:pointer;padding:0 20px;text-align:center;
+}
+.banner-tools{position:absolute;top:10px;right:10px;z-index:3;display:flex;gap:6px;opacity:0;transition:.2s}
+.banner:hover .banner-tools{opacity:1}
+.banner-tools .ic-btn{background:rgba(255,255,255,.9);color:#333}
+
+/* ==================== 卡片 ==================== */
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:12px;box-shadow:var(--sh);display:flex;flex-direction:column;min-width:0;
+}
+.card-title{display:flex;align-items:center;gap:6px;font-weight:700;font-size:13.5px;color:var(--tx);margin-bottom:8px}
+.card-title.no-extra{margin-bottom:2px}
+.card-title .right{margin-left:auto}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex:none}
+.dot.blue{background:var(--blue)} .dot.green{background:var(--green)}
+.dot.orange{background:var(--orange)} .dot.purple{background:var(--purple)}
+.dot.gray{background:var(--tx3)} .dot.red{background:var(--red)}
+.ic-btn{
+  width:24px;height:24px;border-radius:7px;display:grid;place-items:center;
+  font-size:12px;color:var(--tx2);transition:.15s;
+}
+.ic-btn:hover{background:var(--line2);color:var(--tx)}
+.ic-btn.sm{width:20px;height:20px;font-size:11px}
+.mini-btn{
+  padding:5px 12px;border-radius:8px;background:var(--blue);color:#fff;
+  font-size:12.5px;font-weight:600;transition:.15s;
+}
+.mini-btn:hover{filter:brightness(1.06)}
+.mini-btn.ghost{background:var(--line2);color:var(--tx2)}
+.mini-btn.ghost:hover{background:var(--line);color:var(--tx)}
+.mini-btn.danger{color:var(--red)}
+.mini-btn.danger:hover{background:#fdecec}
+.wide-btn{
+  width:100%;margin-top:auto;padding:6px;border-radius:8px;background:var(--line2);
+  color:var(--tx2);font-size:12.5px;transition:.15s;
+}
+.wide-btn:hover{background:var(--line);color:var(--tx)}
+
+/* ==================== 行布局 ==================== */
+.row{display:grid;gap:12px}
+.row1{grid-template-columns:1.35fr 1.5fr 1.55fr 1fr 1fr 1fr;align-items:stretch}
+.row2{grid-template-columns:1fr 1.85fr;align-items:stretch}
+
+/* ==================== 日历卡 ==================== */
+.cal-card{padding:10px 12px 12px}
+.cal-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.chip{padding:2px 10px;border-radius:999px;font-size:12px;color:var(--tx3);transition:.15s}
+.chip.on{background:var(--blue-bg);color:var(--blue);font-weight:600}
+.cal-nav{margin-left:auto;display:flex;align-items:center;gap:2px;font-size:12.5px;font-weight:600;color:var(--tx2)}
+.cal-nav .nav{width:20px;height:20px;border-radius:6px;color:var(--tx3);font-size:15px;line-height:1}
+.cal-nav .nav:hover{background:var(--line2);color:var(--tx)}
+.cal-body{display:flex;gap:10px;flex:1;min-height:0}
+.cal-side{flex:none;width:92px;display:flex;flex-direction:column;justify-content:center}
+.big-day{font-size:38px;font-weight:800;line-height:1;color:var(--blue)}
+.big-wd{font-size:13px;font-weight:700;color:var(--tx);margin-top:2px}
+.big-date{font-size:10.5px;color:var(--tx3);margin-top:8px}
+.big-lunar{font-size:10.5px;color:var(--tx3)}
+.cal-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:3px}
+.cal-weekdays i{text-align:center;font-size:10.5px;font-style:normal;color:var(--tx3)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;flex:1}
+.day{
+  border-radius:7px;padding:2px 1px;text-align:center;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:34px;transition:.12s;border:1px solid transparent;
+}
+.day:hover{background:var(--line2)}
+.day .d{font-size:12.5px;font-weight:600;line-height:1.15;color:var(--tx)}
+.day .l{font-size:9px;line-height:1.15;color:var(--tx3);white-space:nowrap}
+.day.out .d,.day.out .l{color:#c8cdd4}
+.day.other-month .d{color:#c8cdd4}
+.day.today{background:var(--blue);border-color:var(--blue)}
+.day.today .d,.day.today .l{color:#fff}
+.day.today .l{opacity:.9}
+.day.fest .l{color:var(--red)}
+.day.today.fest .l{color:#fff}
+.day.sel{border-color:var(--blue)}
+
+/* ==================== 天气卡 ==================== */
+.wx-card{padding:11px 12px}
+.wx-head{display:flex;align-items:center;gap:6px}
+.wx-city{font-weight:700;font-size:14px}
+.wx-forecast{margin-left:auto;font-size:11.5px;color:var(--tx3)}
+.wx-date{font-size:11.5px;color:var(--tx3);margin-top:1px}
+.wx-main{display:flex;gap:8px;margin-top:6px}
+.wx-now{flex:none;width:74px;text-align:center}
+.wx-ico{font-size:30px;line-height:1.1}
+.wx-cond{font-size:11.5px;color:var(--tx2)}
+.wx-temp{display:flex;align-items:flex-start;justify-content:center;color:var(--tx)}
+.wx-temp b{font-size:30px;font-weight:800;line-height:1.05}
+.wx-temp i{font-size:14px;font-style:normal;font-weight:700;margin-top:3px}
+.wx-hilo{font-size:10.5px;color:var(--tx3)}
+.wx-fc{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;min-width:0}
+.fc-col{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.fc-col .n{font-size:10px;color:var(--tx3)}
+.fc-col .i{font-size:17px;line-height:1.1}
+.fc-col .h{font-size:12px;font-weight:700;color:var(--tx)}
+.fc-col .lo{font-size:10.5px;color:var(--tx3)}
+.fc-col .p{font-size:9.5px;color:var(--blue)}
+.fc-col .t{font-size:9px;color:#c0c6ce;white-space:nowrap}
+.wx-metrics{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:4px 8px;
+  margin-top:8px;padding-top:8px;border-top:1px solid var(--line2);
+}
+.wx-metrics div{font-size:10.5px;color:var(--tx3);display:flex;gap:4px}
+.wx-metrics b{color:var(--tx2);font-weight:600}
+.wx-sun{display:flex;gap:14px;margin-top:4px;font-size:10.5px;color:var(--tx3)}
+.wx-sun b{color:var(--tx2)}
+
+/* ==================== 倒计时卡 ==================== */
+.cd-card{padding:11px 12px 12px}
+.cd-body{display:flex;gap:10px;flex:1;min-width:0}
+.cd-main{flex:none;width:78px;display:flex;flex-direction:column;justify-content:center}
+.cd-name{font-size:13px;font-weight:700;color:var(--blue);line-height:1.2}
+.cd-date{font-size:9.5px;color:var(--tx3);margin-top:2px}
+.cd-num{font-size:32px;font-weight:800;line-height:1;color:var(--tx2);margin-top:auto}
+.cd-num.past{color:#c3c9d1}
+.cd-unit{font-size:11px;color:var(--tx3)}
+.cd-state{font-size:10.5px;color:var(--tx3);margin-bottom:auto}
+.cd-list{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0;overflow:auto;max-height:132px}
+.cd-row{display:flex;align-items:center;gap:6px;font-size:11.5px;cursor:pointer;border-radius:6px;padding:1px 3px}
+.cd-row:hover{background:var(--line2)}
+.cd-row .e{font-size:13px;flex:none}
+.cd-row .n{font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cd-row .v{margin-left:auto;font-weight:700;color:var(--blue);flex:none}
+.cd-row .v.past{color:var(--tx3)}
+.cd-row .d{font-size:9.5px;color:var(--tx3);flex:none}
+.cd-note{
+  margin-top:8px;padding:5px 8px;border-radius:7px;background:var(--card2);
+  border:1px solid var(--line2);font-size:10.5px;color:var(--tx3);
+}
+.cd-empty{font-size:11.5px;color:var(--tx3);text-align:center;padding:22px 0}
+
+/* ==================== 番茄钟 ==================== */
+.pomo-card{align-items:center;justify-content:center;gap:6px}
+.pomo-ring-wrap{position:relative;width:132px;height:132px}
+.pomo-ring{width:100%;height:100%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:#f0e2d5;stroke-width:9}
+.ring-fg{fill:none;stroke:var(--pomo);stroke-width:9;stroke-linecap:round;
+  stroke-dasharray:552.9;stroke-dashoffset:0;transition:stroke-dashoffset .3s linear}
+.pomo-inner{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;padding:0 14px;
+}
+.pomo-task{font-size:10.5px;color:var(--tx2);line-height:1.25;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pomo-time{font-size:27px;font-weight:800;color:var(--pomo);line-height:1.15;letter-spacing:.02em}
+.pomo-clock{font-size:11px;color:var(--tx3);letter-spacing:.06em}
+.pomo-btns{display:flex;gap:5px;margin-top:5px}
+.pomo-btns .mini-btn{padding:4px 10px;font-size:11.5px}
+.pomo-done{font-size:10.5px;color:var(--tx3)}
+.pomo-done b{color:var(--pomo)}
+
+/* ==================== 座右铭 ==================== */
+.motto-card{padding:11px 12px 12px}
+.motto-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4px 0}
+.motto-mark{font-size:44px;line-height:.6;color:#dfe3e9;font-family:Georgia,serif}
+.motto-text{font-size:14.5px;font-weight:700;color:var(--tx);line-height:1.5;margin-top:6px}
+.motto-from{font-size:10.5px;color:var(--tx3);margin-top:6px}
+
+/* ==================== 最近文件 ==================== */
+.files-card{padding:11px 12px 12px}
+.files-list{display:flex;flex-direction:column;gap:3px;flex:1;overflow:auto}
+.file-row{display:flex;align-items:center;gap:6px;font-size:11.5px;padding:3px 5px;border-radius:6px;cursor:pointer}
+.file-row:hover{background:var(--line2)}
+.file-row .ic{font-size:12px;flex:none}
+.file-row .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tx)}
+.file-row .t{font-size:9.5px;color:var(--tx3);flex:none}
+.file-row .tag{
+  font-size:8.5px;font-weight:700;text-transform:uppercase;padding:1px 4px;border-radius:4px;
+  background:var(--blue-bg);color:var(--blue);flex:none;
+}
+.file-row .tag.csv{background:#e7f6ee;color:var(--green)}
+.file-row .tag.md{background:#eaf1fd;color:var(--blue)}
+.file-row .tag.img{background:#fdeee2;color:var(--orange)}
+.file-empty{font-size:11.5px;color:var(--tx3);text-align:center;padding:20px 0}
+
+/* ==================== 工具栏 ==================== */
+.toolbar{display:flex;align-items:center;gap:3px;margin-bottom:8px;flex-wrap:wrap}
+.tb{
+  padding:3px 9px;border-radius:7px;font-size:11.5px;color:var(--tx2);
+  border:1px solid transparent;transition:.15s;
+}
+.tb:hover{background:var(--line2)}
+.tb.on{background:var(--blue-bg);color:var(--blue);font-weight:600}
+.tb-sep{width:1px;height:13px;background:var(--line);margin:0 4px}
+.tb.plus{background:var(--blue);color:#fff;font-weight:600}
+
+/* ==================== 今日日程 ==================== */
+.sched-card{padding:11px 12px 12px}
+.sched-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.sched-sub{font-size:11px;color:var(--tx3)}
+.sched-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;flex:1;min-height:0}
+.sched-col{display:flex;flex-direction:column;min-width:0}
+.col-head{display:flex;align-items:center;gap:5px;padding-bottom:5px;margin-bottom:6px;border-bottom:1px solid var(--line2)}
+.col-t{font-size:11.5px;font-weight:700;color:var(--tx2)}
+.badge{
+  margin-left:auto;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;
+  background:var(--blue-bg);color:var(--blue);
+}
+.badge.g{background:#e7f6ee;color:var(--green)}
+.item-list{display:flex;flex-direction:column;gap:5px;overflow:auto;flex:1}
+.tk{
+  border:1px solid var(--line2);border-radius:8px;padding:6px 7px;background:var(--card2);
+  transition:.15s;position:relative;
+}
+.tk:hover{border-color:#d7dbe2;background:#fff}
+.tk-top{display:flex;align-items:flex-start;gap:5px}
+.tk-ck{
+  width:13px;height:13px;border-radius:4px;border:1.5px solid #cdd3db;flex:none;margin-top:2px;
+  display:grid;place-items:center;font-size:9px;color:#fff;transition:.15s;
+}
+.tk-ck:hover{border-color:var(--blue)}
+.tk.done .tk-ck{background:var(--green);border-color:var(--green)}
+.tk-name{font-size:11.5px;font-weight:600;color:var(--tx);line-height:1.35;flex:1;min-width:0}
+.tk.done .tk-name{color:var(--tx3);text-decoration:line-through}
+.tk-meta{font-size:9.5px;color:var(--tx3);margin-top:2px;line-height:1.4;display:flex;flex-wrap:wrap;gap:0 5px}
+.tk-meta .sep{color:#d5dae1}
+.tk-meta .late{color:var(--red)}
+.tk-n{
+  position:absolute;right:6px;bottom:5px;font-size:9.5px;color:var(--tx3);
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:0 5px;
+}
+.tk-acts{position:absolute;top:4px;right:4px;display:none;gap:2px}
+.tk:hover .tk-acts{display:flex}
+.tk-acts button{
+  width:17px;height:17px;border-radius:5px;font-size:9px;color:var(--tx3);
+  display:grid;place-items:center;background:#fff;border:1px solid var(--line);
+}
+.tk-acts button:hover{color:var(--tx);background:var(--line2)}
+.col-empty{font-size:11px;color:var(--tx3);text-align:center;padding:18px 6px}
+
+/* ==================== 进度总览 ==================== */
+.prog-card{padding:11px 12px 12px}
+.prog-head{display:flex;align-items:flex-start;justify-content:space-between}
+.prog-sub{font-size:11px;color:var(--tx3)}
+.prog-groups{display:flex;gap:9px;flex:1;min-height:0;overflow-x:auto;padding-bottom:2px}
+.pgrp{flex:1;min-width:150px;display:flex;flex-direction:column;gap:6px}
+.pgrp-head{display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:var(--tx2);
+  padding-bottom:5px;border-bottom:1px solid var(--line2)}
+.pgrp-head .e{font-size:13px}
+.pgrp-list{display:flex;flex-direction:column;gap:6px;overflow:auto}
+.pi{
+  border:1px solid var(--line2);border-radius:8px;padding:6px 8px;background:var(--card2);
+  transition:.15s;cursor:pointer;
+}
+.pi:hover{border-color:#d7dbe2;background:#fff}
+.pi-top{display:flex;align-items:center;gap:5px}
+.pi-ic{font-size:13px;flex:none}
+.pi-name{font-size:11px;color:var(--tx2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pi-val{margin-left:auto;font-size:13.5px;font-weight:800;color:var(--tx);flex:none;white-space:nowrap}
+.pi-val i{font-size:9.5px;font-weight:600;color:var(--tx3);font-style:normal;margin-left:2px}
+.pi-bar{height:5px;border-radius:99px;background:#e9ecf0;margin-top:5px;overflow:hidden}
+.pi-bar i{display:block;height:100%;border-radius:99px;background:var(--blue);transition:width .3s}
+.pi-bar i.warn{background:var(--orange)}
+.pi-bar i.ok{background:var(--green)}
+.pi-foot{display:flex;align-items:center;gap:4px;margin-top:4px;font-size:9.5px;color:var(--tx3)}
+.pi-foot .stp{margin-left:auto}
+.pi-add{
+  border:1px dashed var(--line);border-radius:8px;padding:5px;text-align:center;
+  font-size:11px;color:var(--tx3);transition:.15s;
+}
+.pi-add:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ==================== 页脚 ==================== */
+.foot{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--tx3);padding:2px 4px 8px}
+.foot-links{display:flex;gap:14px}
+.foot-links a{color:var(--tx3)}
+.foot-links a:hover{color:var(--blue)}
+
+/* ==================== 弹窗 ==================== */
+.modal{position:fixed;inset:0;background:rgba(24,30,40,.42);display:none;align-items:center;
+  justify-content:center;z-index:100;padding:16px;backdrop-filter:blur(2px)}
+.modal.on{display:flex}
+.modal-box{
+  background:#fff;border-radius:14px;width:min(420px,100%);max-height:86vh;
+  display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(20,28,40,.28);
+}
+.modal-head{display:flex;align-items:center;padding:13px 15px;border-bottom:1px solid var(--line2);
+  font-weight:700;font-size:14px}
+.modal-head .ic-btn{margin-left:auto}
+.modal-body{padding:14px 15px;overflow:auto;display:flex;flex-direction:column;gap:11px}
+.modal-foot{display:flex;align-items:center;gap:7px;padding:11px 15px;border-top:1px solid var(--line2)}
+.fld{display:flex;flex-direction:column;gap:4px}
+.fld label{font-size:11.5px;color:var(--tx2);font-weight:600}
+.fld input,.fld select,.fld textarea{
+  font:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;
+  background:#fff;color:var(--tx);outline:none;width:100%;
+}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-bg)}
+.fld .hint{font-size:10.5px;color:var(--tx3)}
+.fld-row{display:flex;gap:9px}
+.fld-row .fld{flex:1}
+.chk-line{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--tx2)}
+.chk-line input{width:15px;height:15px;accent-color:var(--blue)}
+
+/* ==================== 提示 ==================== */
+.toast{
+  position:fixed;left:50%;bottom:34px;transform:translate(-50%,14px);
+  background:rgba(32,36,43,.94);color:#fff;font-size:12.5px;padding:8px 16px;border-radius:9px;
+  opacity:0;pointer-events:none;transition:.24s;z-index:200;max-width:80vw;text-align:center;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* ==================== 响应式 ==================== */
+@media (max-width:1560px){
+  .row1{grid-template-columns:repeat(4,1fr)}
+  .cal-card{grid-column:span 2}
+}
+@media (max-width:1180px){
+  .row1{grid-template-columns:repeat(3,1fr)}
+  .row2{grid-template-columns:1fr}
+  .pomo-card{grid-column:span 1}
+}
+@media (max-width:860px){
+  .row1{grid-template-columns:repeat(2,1fr)}
+  .cal-card{grid-column:span 2}
+  .sched-cols{grid-template-columns:1fr}
+  .banner{height:130px}
+  .banner-motto{font-size:26px}
+}
+@media (max-width:560px){
+  .root{padding:10px;gap:10px}
+  .row1{grid-template-columns:1fr}
+  .cal-card{grid-column:span 1}
+  .cal-body{flex-direction:column}
+  .cal-side{width:auto;flex-direction:row;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .big-day{font-size:26px}
+  .banner-motto{font-size:21px;letter-spacing:.08em}
+  .prog-groups{flex-direction:column}
+}
+
+</style>
+</head>
+<body>
+<div class="root">
+
+  <!-- ==================== 横幅 ==================== -->
+  <header class="banner" id="banner">
+    <div class="banner-motto" id="bannerMotto">请记录你的座右铭</div>
+    <div class="banner-tools">
+      <button class="ic-btn" id="btnBannerBg" title="换背景图">🖼</button>
+      <button class="ic-btn" id="btnBannerText" title="编辑文字">✎</button>
+    </div>
+  </header>
+
+  <!-- ==================== 第一行 ==================== -->
+  <section class="row row1">
+
+    <!-- 今日 + 日历 -->
+    <div class="card cal-card">
+      <div class="cal-head">
+        <button class="chip on" id="calToday">今日</button>
+        <div class="cal-nav">
+          <button class="nav" id="calPrev">‹</button>
+          <span class="cal-title" id="calTitle">—</span>
+          <button class="nav" id="calNext">›</button>
+        </div>
+      </div>
+      <div class="cal-body">
+        <div class="cal-side">
+          <div class="big-day" id="bigDay">—</div>
+          <div class="big-wd" id="bigWd">—</div>
+          <div class="big-date" id="bigDate">—</div>
+          <div class="big-lunar" id="bigLunar">—</div>
+        </div>
+        <div class="cal-main">
+          <div class="cal-weekdays"><i>一</i><i>二</i><i>三</i><i>四</i><i>五</i><i>六</i><i>日</i></div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 天气 -->
+    <div class="card wx-card">
+      <div class="wx-head">
+        <span class="wx-city" id="wxCity">广州</span>
+        <span class="wx-forecast">5日预报</span>
+        <button class="ic-btn sm" id="wxGeo" title="使用当前位置">🎯</button>
+        <button class="ic-btn sm" id="wxLoc" title="手动设置城市">✎</button>
+      </div>
+      <div class="wx-date" id="wxDate">—</div>
+      <div class="wx-main">
+        <div class="wx-now">
+          <div class="wx-ico" id="wxIco">⛅</div>
+          <div class="wx-cond" id="wxCond">—</div>
+          <div class="wx-temp"><b id="wxTemp">—</b><i>°</i></div>
+          <div class="wx-hilo">高 <b id="wxHigh">—</b>° 低 <b id="wxLow">—</b>°</div>
+        </div>
+        <div class="wx-fc" id="wxForecast"></div>
+      </div>
+      <div class="wx-metrics" id="wxMetrics"></div>
+      <div class="wx-sun">
+        <span>日出 <b id="wxSunrise">—</b></span>
+        <span>日落 <b id="wxSunset">—</b></span>
+      </div>
+    </div>
+
+    <!-- 倒计时 -->
+    <div class="card cd-card">
+      <div class="card-title"><i class="dot blue"></i>倒计时
+        <button class="ic-btn sm right" id="cdAdd" title="添加">＋</button>
+      </div>
+      <div class="cd-body">
+        <div class="cd-main" id="cdMain"></div>
+        <div class="cd-list" id="cdList"></div>
+      </div>
+      <div class="cd-note">💡 把重要的日子放在眼前，每一天都更接近期待。</div>
+    </div>
+
+    <!-- 番茄钟 -->
+    <div class="card pomo-card">
+      <div class="pomo-ring-wrap">
+        <svg class="pomo-ring" viewBox="0 0 200 200">
+          <circle class="ring-bg" cx="100" cy="100" r="88"></circle>
+          <circle class="ring-fg" id="ringFg" cx="100" cy="100" r="88"></circle>
+        </svg>
+        <div class="pomo-inner">
+          <div class="pomo-task" id="pomoTask">阅读</div>
+          <div class="pomo-time" id="pomoTime">25:00</div>
+        </div>
+      </div>
+      <div class="pomo-clock" id="pomoClock">--:--:--</div>
+      <div class="pomo-btns">
+        <button class="mini-btn" id="pomoToggle">开始</button>
+        <button class="mini-btn ghost" id="pomoReset">重置</button>
+        <button class="mini-btn ghost" id="pomoSet">设置</button>
+      </div>
+      <div class="pomo-done">今日完成 <b id="pomoDone">0</b> 个</div>
+    </div>
+
+    <!-- 随机座右铭 -->
+    <div class="card motto-card">
+      <div class="card-title"><i class="dot purple"></i>随机座右铭
+        <button class="ic-btn sm right" id="mottoEdit" title="编辑">✎</button>
+      </div>
+      <div class="motto-body">
+        <div class="motto-mark">“</div>
+        <div class="motto-text" id="mottoText">请记录你的座右铭</div>
+        <div class="motto-from" id="mottoFrom">— 默认</div>
+      </div>
+      <button class="wide-btn" id="mottoNext">换一条</button>
+    </div>
+
+    <!-- 最近文件 -->
+    <div class="card files-card">
+      <div class="card-title"><i class="dot gray"></i>最近文件
+        <button class="ic-btn sm right" id="fileAdd" title="添加">＋</button>
+      </div>
+      <div class="files-list" id="filesList"></div>
+    </div>
+
+  </section>
+
+  <!-- ==================== 第二行 ==================== -->
+  <section class="row row2">
+
+    <!-- 今日日程 -->
+    <div class="card sched-card">
+      <div class="sched-head">
+        <div>
+          <div class="card-title no-extra"><i class="dot green"></i>今日日程</div>
+          <div class="sched-sub" id="schedSub">—</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="tb on" data-s="add" id="schedAdd">新增</button>
+        <button class="tb" data-s="auto">自动</button>
+        <button class="tb" data-s="expand">展开</button>
+        <button class="tb" data-s="color">颜色</button>
+        <button class="tb" data-s="group">分组</button>
+        <span class="tb-sep"></span>
+        <button class="tb on" data-v="d">日</button>
+        <button class="tb" data-v="w">周</button>
+        <button class="tb" data-v="m">月</button>
+        <button class="tb" data-v="y">年</button>
+      </div>
+      <div class="sched-cols">
+        <div class="sched-col">
+          <div class="col-head"><span class="col-t">待完成</span><span class="badge" id="todoBadge">0</span></div>
+          <div class="item-list" id="todoList"></div>
+        </div>
+        <div class="sched-col">
+          <div class="col-head"><span class="col-t">已完成</span><span class="badge g" id="doneBadge">0</span></div>
+          <div class="item-list" id="doneList"></div>
+        </div>
+        <div class="sched-col">
+          <div class="col-head"><span class="col-t">日期事件</span><span class="badge" id="eventBadge">0</span></div>
+          <div class="item-list" id="eventList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 进度总览 -->
+    <div class="card prog-card">
+      <div class="prog-head">
+        <div>
+          <div class="card-title no-extra"><i class="dot orange"></i>进度总览</div>
+          <div class="prog-sub" id="progSub">—</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button class="tb on" data-p="auto">自动</button>
+        <button class="tb" data-p="expand">展开</button>
+        <button class="tb" data-p="color">颜色</button>
+        <button class="tb" data-p="manage" id="progManage">管理</button>
+      </div>
+      <div class="prog-groups" id="progGroups"></div>
+    </div>
+
+  </section>
+
+  <footer class="foot">
+    <span id="footInfo">本机 · 离线运行</span>
+    <span class="foot-links">
+      <a href="#" id="btnExport">导出数据</a>
+      <a href="#" id="btnImport">导入数据</a>
+      <a href="#" id="btnReset">恢复默认</a>
+    </span>
+  </footer>
+</div>
+
+<!-- 通用弹窗 -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head"><span id="modalTitle">编辑</span><button class="ic-btn sm" id="modalClose">✕</button></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot">
+      <button class="mini-btn ghost danger" id="modalDel">删除</button>
+      <span class="grow"></span>
+      <button class="mini-btn ghost" id="modalCancel">取消</button>
+      <button class="mini-btn" id="modalOk">确定</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="filePick" accept="image/*" hidden>
+<input type="file" id="jsonPick" accept=".json,application/json" hidden>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   calendar.js — 农历 / 节气 / 节日 核心
+   数据源自权威实现（6tail/lunar-javascript）离线导出，
+   覆盖 1900-2100，已做全量交叉验证。
+   ============================================================ */
+
+/* 农历年数据（1900-2100，每年一项）
+   位 15..4 : 12 个常规月的大小（1 = 30 天，0 = 29 天）
+   位 3..0  : 闰月所跟的月份编号（0 = 本年无闰月）
+   位 16    : 闰月天数（1 = 30 天，0 = 29 天）
+*/
+const LUNAR_INFO = '4bd8,4ae0,a570,54d5,d260,d950,16554,56a0,9ad0,55d2,4ae0,a5b6,a4d0,d250,1d255,b540,d6a0,ada2,95b0,14977,4970,a4b0,b4b5,6a50,6d40,1ab54,2b60,9570,52f2,4970,6566,d4a0,ea50,16a95,5ad0,2b60,186e3,92e0,1c8d7,c950,d4a0,1d8a6,b550,56a0,1a5b4,25d0,92d0,d2b2,a950,b557,6ca0,b550,15355,4da0,a5b0,14573,52b0,a9a8,e950,6aa0,aea6,ab50,4b60,aae4,a570,5260,f263,d950,5b57,56a0,96d0,4dd5,4ad0,a4d0,d4d4,d250,d558,b540,b6a0,195a6,95b0,49b0,a974,a4b0,b27a,6a50,6d40,af46,ab60,9570,4af5,4970,64b0,74a3,ea50,6b58,5ac0,ab60,96d5,92e0,c960,d954,d4a0,da50,7552,56a0,abb7,25d0,92d0,cab5,a950,b4a0,baa4,ad50,55d9,4ba0,a5b0,15176,52b0,a930,7954,6aa0,ad50,5b52,4b60,a6e6,a4e0,d260,ea65,d530,5aa0,76a3,96d0,4afb,4ad0,a4d0,1d0b6,d250,d520,dd45,b5a0,56d0,55b2,49b0,a577,a4b0,aa50,1b255,6d20,ada0,14b63,9370,49f8,4970,64b0,168a6,ea50,6b20,1a6c4,aae0,92e0,d2e3,c960,d557,d4a0,da50,5d55,56a0,a6d0,55d4,52d0,a9b8,a950,b4a0,b6a6,ad50,55a0,aba4,a5b0,52b0,b273,6930,7337,6aa0,ad50,14b55,4b60,a570,54e4,d160,e968,d520,daa0,16aa6,56d0,4ae0,a9d4,a2d0,d150,f252,d520'
+  .split(',').map(h => parseInt(h, 16));
+
+const BASE_DAY = Date.UTC(1900, 0, 31);   // 1901-01-01 为农历 1900 年冬月十一
+
+/* 每年 24 节气的日期（1900-2100，两年一字节：十位月序无所谓，只存「日」）
+   顺序：小寒 大寒 立春 雨水 惊蛰 春分 清明 谷雨 立夏 小满 芒种 夏至
+        小暑 大暑 立秋 处暑 白露 秋分 寒露 霜降 立冬 小雪 大雪 冬至 */
+const TERM_DAYS_STR =
+'062004190621052006210622072308230823092408230722062104190621052106220622082308240824092408230822062105190621062106220722'+
+'082408240824092408230822062105200722062107220722082409240924092408230823072105200621052006210622072308230823092408230723'+
+'062104190621052106220622082308240824092408230822062105190621062106220622082408240824092408230822062105200722062107220722'+
+'082409240924092408230823072105200621052006210622072308230823092408230723062104190621052106220622082308240824092408230822'+
+'062105190621062106220622082408240824092408230822062105200722062107220722082409240924092408230823072105200621052006210622'+
+'072308230823092408220723062004190621052106220622082308240823092408230822062104190621052106220622082408240824092408230822'+
+'062105200622062106220722082408240924092408230823062105200621052006210622072308230823082408220723062004190621052106210622'+
+'082308240823092408230822062104190621052106220622082408240824092408230822062105200622062106220722082408240924092408230822'+
+'062105200621052006210622072308230823082408220723062004190621052006210622082308240823092408230722062104190621052106220622'+
+'082408240824092408230822062105190621062106220722082408240924092408230822062105200621052006210622072308230823082408220723'+
+'062004190621052006210622082308240823092408230722062104190621052106220622082308240824092408230822062105190621062106220722'+
+'082408240924092408230822062105200621052006210622072308230823082307220723062004190621052006210622072308230823092408230722'+
+'062104190621052106220622082308240824092408230822062105190621062106220722082408240824092408230822062105200621052006210621'+
+'072308230823082307220723062004190621052006210622072308230823092408230722062104190621052106220622082308240824092408230822'+
+'062105190621062106220622082408240824092408230822062105200621052006210621072308230823082307220723062004190621052006210622'+
+'072308230823092408230722062104190621052106220622082308240824092408230822062105190621062106220622082408240824092408230822'+
+'062105200621052006210621072308230823082307220723062004190621052006210622072308230823092408230722062104190621052106220622'+
+'082308240824092408230822062105190621062106220622082408240824092408230822062105200621052005210621072308230823082307220723'+
+'062004190621052006210622072308230823082408220722062004190621052106220622082308240823092408230822062104190621052106220622'+
+'082408240824092408230822062105200521052005210621072307230823082307220723052004190621052006210622072308230823082408220722'+
+'062004190621052006210622082308240823092408230822062104190621052106220622082408240824092408230822062105200521052005210621'+
+'072307230823082307220723052004190621052006210622072308230823082408220722062004190621052006210622082308240823092408230722'+
+'062104190621052106220622082308240824092408230822062105200520052005210621072307230823082307220722052004190621052006210622'+
+'072308230823082408220722062004190621052006210622072308230823092408230722062104190621052106220622082308240824092408230822'+
+'062105190520052005210621072307230723082307220722052004190621052006210621072308230823082307220722062004190621052006210622'+
+'072308230823092408230722062104190621052106220622082308240824092408230822062105190520052005210621072307230723082307220722'+
+'052004190621052006210621072308230823082307220722062004190621052006210622072308230823092408230722062104190621052106220622'+
+'082308240824092408230822062105190520052005210521072307230723082307220722052004190621052006210621072308230823082307220722'+
+'062004190621052006210622072308230823092408230722062104190621052106220622082308240824092408230822062105190520052005210521'+
+'072307230723082307220722052004190621052005210621072308230823082307220722062004190621052006210622072308230823092408230722'+
+'062104190621052106220622082308240823092408230822062105190520042005210521072307230723082307220722052004190621052005210621'+
+'072307230823082307220722062004190621052006210622072308230823082408230722062004190621052106210622082308240823092408230822'+
+'062105190520042005210521072307230723082307220722052004190621052005210621072307230823082307220722062004190621052006210622'+
+'072308230823082408220722062004190621052006210622082308240823092408230822062104190520042005210521072207230723082307220722'+
+'052004190521052005210621072307230823082307220722052004190621052006210622072308230823082408220722062004190621052006210622'+
+'072308240823092408230722062104190520042005210521072207230723082307220722052004190520052005210621072307230723082307220721'+
+'052004190621052006210621072308230823082408220722062004190621052006210622072308230823092408230722062104190520042005210521'+
+'072207230723082307220722052004180520052005210621072307230723082307220721052004190621052006210621072308230823082307220722'+
+'062004190621052006210622072308230823092408230722062104190520042005210521072207230723082307220722052004180520052005210521'+
+'072307230723082307220721052004190621052006210621072308230823082307220722062004190621052006210622072308230823092408230722'+
+'062104190520042005210521072207230723082307220722052004180520052005210521072307230723082307220721052004190621052006210621'+
+'072308230823082307220722062004190621052006210622072308230823092408230722062104190520042005210521072207230723082307220722'+
+'052004180520052005210521072307230723082307220721052004190621052005210621072307230823082307220722062004190621052006210622'+
+'072308230823092408230722062104190520042005210521072207230722082307220722052004180520042005210521072307230723082307220721'+
+'052004190621052005210621072307230823082307220722062004190621052006210622072308230823082408230722062104190520042005200521'+
+'072207230722082307220722052004180520042005210521072207230723082307220721052004190621052005210621072307230823082307220722'+
+'062004190621052006210622072308230823082408220722062004190520041905200521072207230722082307220722052003180520042005210521'+
+'072207230723082307220721052004190521052005210621072307230823082307220722052004190621052006210621072308230823082408220722'+
+'062004190520041905200521062207220722082307220722052003180520042005210521072207230723082307220721052004190520052005210621'+
+'072307230723082307220721052004190621052006210621072308230823082408220722062004190520041905200521062207220722082307220622'+
+'052003180520042005210521072207230723082307220721052004180520052005210521072307230723082307220721052004190621052006210621'+
+'072308230823082307220722062004190520041905200521062207220722082307220622052003180520042005210521072207230723082307220721'+
+'052004180520052005210521072307230723082307220721052004190621052006210621072308230823082307220722062004190520041905200521'+
+'062207220722082307220622052003180520042005210521072207230723082307220721052004180520052005210521072307230723082307220721'+
+'052004190621052005210621072307230823082307220722062004190520041905200521062207220722082307220622052003180520042005210521'+
+'072207230723082307220721052004180520052005210521072307230723082307220721052004190621052005210621072307230823082307220722'+
+'062004190520041905200521062207220722082307220622052003180520042005200521072207230722082307220721052004180520042005210521'+
+'072307230723082307220721052004190621052005210621072307230823082307220722062004190520041905200521062207220722072307220622'+
+'052003180520041905200521072207230722082307220721052004180520042005210521072207230723082307220721052004190621052005210621'+
+'072307230823082307220722062004190520041905200520062207220722072307210622051903180520041905200521062207220722082307220721'+
+'052003180520042005210521072207230723082307220721052004190520052005210621072307230723082307220722052004190520041905200520'+
+'062207220722072307210622051903180520041905200521062207220722082307220721052003180520042005210521072207230723082307220721'+
+'052004190520052005210521072307230723082307220722052004190520041905200520062207220722072307210622051903180520041905200521'+
+'062207220722082307220621052003180520042005210521072207230723082307220721052004190520052005210521072307230723082307220721'+
+'052004190520041905200520062207220722072206210622051903180520041905200521062207220722082307220621052003180520042005210521'+
+'072207230723082307220721052004180520052005210521072307230723082307220721052004190520041905200520062207220722072206210622'+
+'051903180520041905200521062207220722082307220621052003180520042005210521072207230723082307220721052004180520052005210521'+
+'072307230723082307220721052004190520041904200520062206220722072206210622051903180520041905200521062207220722082307220621'+
+'052003180520042005200521072207230722082307220721052004180520052005210521072307230723082307220721052004190520041904200520'+
+'062206220722072206210622051903180520041905200521062207220722072307220621052003180520042005200521072207230722082307220721'+
+'052004180520042005210521072207230723082307220721052004190520041904200520062206220722072206210622051903180520041905200521'+
+'062207220722072307220621052003180520041905200521062207230722082307220721052004180520042005210521072207230723082307220721'+
+'052004190520041904200520062206220722072206210622051903180520041905200520062207220722072307210621052003180520041905200521'+
+'062207220722082307220721052003180520042005210521072207230723082307220721052004190419041904200520062206220622072206210622'+
+'041903180520041905200520062207220722072307210621051903180520041905200521062207220722082307220721052003180520042005210521'+
+'072207230723082307220721052004190419041904200420062206220622072206210622041903180520041905200520062207220722072307210621'+
+'051903180520041905200521062207220722082307220621052003180520042005210521072207230723082307220721052004190419041904200420'+
+'062206220622072206210621041903180520041905200520062207220722072206210621051903180520041905200521062207220722082307220621'+
+'052003180520042005210521072207230723082307220721052004180419041904200420062206220622072206210621041903180520041905200520'+
+'062206220722072206210621051903180520041905200521062207220722082307220621052003180520042005210521072207230723082307220721'+
+'052004180520052005210521072307230723082307220721';
+
+/* 每位的月序：小寒大寒在 1 月，立春雨水在 2 月，依此类推 */
+const TERM_MONTH = [1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12];
+const TERM_NAMES = ['小寒','大寒','立春','雨水','惊蛰','春分','清明','谷雨','立夏','小满','芒种','夏至',
+  '小暑','大暑','立秋','处暑','白露','秋分','寒露','霜降','立冬','小雪','大雪','冬至'];
+/* 节气所属季节（按公历月） */
+const TERM_SEASON = ['冬','冬','春','春','春','春','春','春','夏','夏','夏','夏',
+  '夏','夏','秋','秋','秋','秋','秋','秋','冬','冬','冬','冬'];
+
+const MONTH_NAME = ['','正','二','三','四','五','六','七','八','九','十','冬','腊'];
+const DAY_NAME = ['','初一','初二','初三','初四','初五','初六','初七','初八','初九','初十',
+  '十一','十二','十三','十四','十五','十六','十七','十八','十九','二十',
+  '廿一','廿二','廿三','廿四','廿五','廿六','廿七','廿八','廿九','三十'];
+const GAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const ZHI = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const SX  = ['鼠','牛','虎','兔','龙','蛇','马','羊','猴','鸡','狗','猪'];
+const WEEK_CN = ['日','一','二','三','四','五','六'];
+
+/* ---------------- 基础工具 ---------------- */
+
+/* 处理后的日期都以「本地时间当天 00:00」为基准，避免跨时区错位 */
+function dayIndex(y, m, d){ return Math.floor((Date.UTC(y, m - 1, d) - BASE_DAY) / 86400000); }
+function ymd(y, m, d){ return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+function dateFromIdx(idx){ return new Date(BASE_DAY + idx * 86400000); }
+function idxToYmd(idx){ const dt = dateFromIdx(idx); return [dt.getUTCFullYear(), dt.getUTCMonth()+1, dt.getUTCDate()]; }
+
+/* ---------------- 农历 ---------------- */
+
+function leapMonthOf(y){ return (y < 1900 || y > 2100) ? 0 : (LUNAR_INFO[y - 1900] & 0xf); }
+function leapDaysOf(y){ return leapMonthOf(y) ? ((LUNAR_INFO[y - 1900] & 0x10000) ? 30 : 29) : 0; }
+function monthDaysOf(y, m){ return (LUNAR_INFO[y - 1900] & (0x8000 >> (m - 1))) ? 30 : 29; }
+function lunarYearDays(y){
+  let sum = 0;
+  for (let m = 1; m <= 12; m++) sum += monthDaysOf(y, m);
+  return sum + leapDaysOf(y);
+}
+
+/* 农历正月初一距基准日的偏移 */
+function lunarNewYearIdx(y){
+  let idx = 0;
+  for (let i = 1900; i < y; i++) idx += lunarYearDays(i);
+  return idx;
+}
+
+/* 公历 -> 农历 */
+function solarToLunar(y, m, d){
+  let idx = dayIndex(y, m, d);
+  if (idx < 0) idx = 0;
+  let ly = 1900, days = 0;
+  // 找到所属农历年
+  let ny = lunarNewYearIdx(ly);
+  while (ny + lunarYearDays(ly) <= idx && ly < 2100){ ny += lunarYearDays(ly); ly++; }
+  days = idx - ny;
+
+  const leap = leapMonthOf(ly);
+  let lm = 1, isLeap = false;
+  
+  for (let mth = 1; mth <= 12; mth++){
+    const md = monthDaysOf(ly, mth);
+    if (days < md) return buildLunar(ly, mth, days + 1, false);
+    days -= md;
+    if (leap === mth){
+      const ld = leapDaysOf(ly);
+      if (days < ld) return buildLunar(ly, mth, days + 1, true);
+      days -= ld;
+    }
+  }
+  return buildLunar(ly, 12, days + 1, false);
+}
+
+function buildLunar(y, m, d, isLeap){
+  return {
+    y, m, d, isLeap,
+    monthStr: (isLeap ? '闰' : '') + MONTH_NAME[m] + '月',
+    dayStr: DAY_NAME[d] || DAY_NAME[29],
+    ganzhi: GAN[(y - 4) % 10] + ZHI[(y - 4) % 12],
+    shengxiao: SX[(y - 4) % 12],
+    numStr: `${num2cn(y)}年${isLeap ? '闰' : ''}${MONTH_NAME[m]}月${DAY_NAME[d] || ''}`
+  };
+}
+
+function num2cn(n){
+  const s = String(n);
+  if (s.length === 4) return '〇一二三四五六七八九'[+s[0]] + '〇一二三四五六七八九'[+s[1]] + '〇一二三四五六七八九'[+s[2]] + '〇一二三四五六七八九'[+s[3]];
+  return s.split('').map(c => '〇一二三四五六七八九'[+c]).join('');
+}
+
+/* 农历 -> 公历（返回 [y, m, d]）。注意闰月在常规月之后 */
+function lunarToSolar(y, m, d, isLeap){
+  if (y < 1900 || y > 2100) return null;
+  const leap = leapMonthOf(y);
+  if (isLeap && leap !== m) return null;
+  let idx = lunarNewYearIdx(y);
+  for (let mth = 1; mth < m; mth++){
+    idx += monthDaysOf(y, mth);
+    if (leap === mth) idx += leapDaysOf(y);
+  }
+  if (isLeap) idx += monthDaysOf(y, m);   // 先跳过常规月
+  idx += d - 1;
+  return idxToYmd(idx);
+}
+
+/* ---------------- 节气 ---------------- */
+
+/* 温和越界保护：1900-2100 */
+function termDay(y, n){
+  if (y < 1900 || y > 2100) return 15;
+  const off = ((y - 1900) * 24 + n) * 2;
+  return parseInt(TERM_DAYS_STR.substr(off, 2), 10);
+}
+function termDate(y, n){
+  const m = TERM_MONTH[n];
+  /* 小寒(0)、大寒(1) 属于公历 y 年 1 月，无需调整 */
+  return new Date(Date.UTC(y, m - 1, termDay(y, n)));
+}
+/* 取某年冬至的日期（冬至 = 序号 23，属公历 12 月） */
+function winterSolstice(y){ return new Date(Date.UTC(y, 11, termDay(y, 23))); }
+/* 某天是否是节气日，返回节气名或 '' */
+function termOfDate(y, m, d){
+  const res = [];
+  for (let n = 0; n < 24; n++){
+    if (TERM_MONTH[n] === m && termDay(y, n) === d) res.push(TERM_NAMES[n]);
+  }
+  return res;
+}
+/* 距今天最近的下一个节气 */
+function nextTerm(fromDate){
+  const y = fromDate.getFullYear();
+  for (let n = 0; n < 24; n++){
+    const dt = termDate(y, n);
+    if (dt.getTime() >= startOfDay(fromDate).getTime()){
+      return { name: TERM_NAMES[n], date: dt, days: Math.round((dt - startOfDay(fromDate)) / 86400000) };
+    }
+  }
+  const dt = termDate(y + 1, 0);
+  return { name: TERM_NAMES[0], date: dt, days: Math.round((dt - startOfDay(fromDate)) / 86400000) };
+}
+
+function startOfDay(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+
+/* ---------------- 节日 ---------------- */
+
+/* 公历固定节日 */
+const SOLAR_FEST = {
+  '1-1':   ['元旦'],
+  '2-14':  ['情人节'],
+  '3-8':   ['妇女节'],
+  '3-12':  ['植树节'],
+  '4-1':   ['愚人节'],
+  '5-1':   ['劳动节'],
+  '5-4':   ['青年节'],
+  '6-1':   ['儿童节'],
+  '7-1':   ['建党节'],
+  '8-1':   ['建军节'],
+  '9-10':  ['教师节'],
+  '10-1':  ['国庆节'],
+  '12-24': ['平安夜'],
+  '12-25': ['圣诞节']
+};
+/* 农历节日（含节气日相关） */
+const LUNAR_FEST = {
+  '1-1':   ['春节'],
+  '1-15':  ['元宵节'],
+  '2-2':   ['龙抬头'],
+  '5-5':   ['端午节'],
+  '7-7':   ['七夕节'],
+  '7-15':  ['中元节'],
+  '8-15':  ['中秋节'],
+  '9-9':   ['重阳节'],
+  '12-8':  ['腊八节'],
+  '12-23': ['小年']
+};
+
+function festivalsOf(date){
+  const y = date.getFullYear(), m = date.getMonth() + 1, d = date.getDate();
+  const list = [];
+  const sf = SOLAR_FEST[m + '-' + d];
+  if (sf) list.push(...sf);
+  /* 清明 / 冬至 等节气节日 */
+  const terms = termOfDate(y, m, d);
+  if (terms.includes('清明')) list.push('清明节');
+  if (terms.includes('冬至')) list.push('冬至');
+  if (terms.includes('立春')) list.push('立春');
+  /* 农历节日 */
+  const lu = solarToLunar(y, m, d);
+  if (!lu.isLeap){
+    const lf = LUNAR_FEST[lu.m + '-' + lu.d];
+    if (lf) list.push(...lf);
+    if (lu.m === 12 && lu.d === (monthDaysOf(lu.y, 12) === 30 ? 30 : 29)) list.push('除夕');
+  }
+  /* 母亲节 / 父亲节：5/6 月第二个周日、第三个周日 */
+  if (m === 5 && d === nthWeekday(y, 5, 0, 2)) list.push('母亲节');
+  if (m === 6 && d === nthWeekday(y, 6, 0, 3)) list.push('父亲节');
+  if (m === 11 && d === nthWeekday(y, 11, 4, 4)) list.push('感恩节');
+  return [...new Set(list)];
+}
+
+/* 某月第 n 个星期 w 的日期 */
+function nthWeekday(y, m, w, n){
+  const first = new Date(y, m - 1, 1).getDay();
+  let d = 1 + ((7 - first) % 7) + (n - 1) * 7;
+  return d;
+}
+
+/* ---------------- 星座 / 干支 ---------------- */
+
+/* 星座：按「起始月/日 ~ 结束月/日」区间判定，跨年用 12→1 区间 */
+const ZODIAC_SPAN = [
+  ['摩羯座',12,22, 1,19],['水瓶座', 1,20, 2,18],['双鱼座', 2,19, 3,20],['白羊座', 3,21, 4,19],
+  ['金牛座', 4,20, 5,20],['双子座', 5,21, 6,21],['巨蟹座', 6,22, 7,22],['狮子座', 7,23, 8,22],
+  ['处女座', 8,23, 9,22],['天秤座', 9,23,10,23],['天蝎座',10,24,11,22],['射手座',11,23,12,21]
+];
+function zodiacOf(m, d){
+  for (const [name, m1, d1, m2, d2] of ZODIAC_SPAN){
+    if (m1 <= m2){
+      if ((m > m1 || (m === m1 && d >= d1)) && (m < m2 || (m === m2 && d <= d2))) return name;
+    } else {
+      if ((m > m1 || (m === m1 && d >= d1)) || (m < m2 || (m === m2 && d <= d2))) return name;
+    }
+  }
+  return '摩羯座';
+}
+
+/* 数九 / 三伏 等简单推算略 */
+function ganzhiOf(y){ return GAN[(y - 4) % 10] + ZHI[(y - 4) % 12]; }
+
+/* ---------------- 供界面使用的便捷封装 ---------------- */
+
+/* 下一个公历月日（如 10-1） */
+function nextSolarDate(m, d, from){
+  const day = startOfDay(from);
+  let dt = new Date(from.getFullYear(), m - 1, d);
+  if (dt.getTime() < day.getTime()) dt = new Date(from.getFullYear() + 1, m - 1, d);
+  return dt;
+}
+
+/* 下一个农历月日 */
+function nextLunarDate(lm, ld, from){
+  const day = startOfDay(from);
+  for (let k = 0; k <= 3; k++){
+    const y = from.getFullYear() + k;
+    const ds = lunarToSolar(y, lm, ld, false);
+    if (!ds) continue;
+    const dt = new Date(ds[0], ds[1] - 1, ds[2]);
+    if (dt.getTime() >= day.getTime()) return dt;
+  }
+  return null;
+}
+
+/* 下一个指定节气 */
+function nextTermDate(name, from){
+  const n = TERM_NAMES.indexOf(name);
+  if (n < 0) return null;
+  const day = startOfDay(from);
+  for (let k = 0; k <= 2; k++){
+    const y = from.getFullYear() + k;
+    const dt = new Date(y, TERM_MONTH[n] - 1, termDay(y, n));
+    if (dt.getTime() >= day.getTime()) return dt;
+  }
+  return null;
+}
+
+/* 节气日期（本地 Date，便于格式化） */
+function termDateLocal(y, n){ return new Date(y, TERM_MONTH[n] - 1, termDay(y, n)); }
+
+</script>
+<script>
+/* ============================================================
+   A_Home · 个人工作台
+   纯离线运行，数据存 localStorage
+   ============================================================ */
+'use strict';
+
+const $  = (s, r) => (r || document).querySelector(s);
+const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
+const KEY = 'minis.dashboard.v2';
+const pad = n => String(n).padStart(2, '0');
+const uid = () => Math.random().toString(36).slice(2, 9);
+const DAY = 86400000;
+
+function ymd(d){ return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function parseYmd(s){ const [y, m, d] = String(s).split('-').map(Number); return new Date(y, m - 1, d); }
+function startOfDay(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+function todayStr(){ return ymd(new Date()); }
+function diffDays(a, b){ return Math.round((startOfDay(a) - startOfDay(b)) / DAY); }
+function num(n){ return (n === null || n === undefined || isNaN(n)) ? '—' : n; }
+
+function toast(msg){
+  const el = $('#toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => el.classList.remove('on'), 1900);
+}
+function esc(s){
+  return String(s === undefined || s === null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+function relTime(ts){
+  const d = Date.now() - ts;
+  if (d < 60000) return '刚刚';
+  if (d < 3600000) return Math.floor(d / 60000) + ' 分钟前';
+  if (d < DAY) return Math.floor(d / 3600000) + ' 小时前';
+  if (d < 30 * DAY) return Math.floor(d / DAY) + ' 天前';
+  return new Date(ts).toLocaleDateString('zh-CN');
+}
+
+/* ==================== 默认数据 ==================== */
+/* 相对今天的日期，让示例数据永远「看起来是活的」 */
+function off(n){
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return ymd(d);
+}
+const DEFAULT = () => ({
+  banner: { img: '', text: '请记录你的座右铭' },
+  motto:  { text: '请记录你的座右铭', from: '默认' },
+  mottos: [
+    { text: '种一棵树最好的时间是十年前，其次是现在', from: '谚语' },
+    { text: '把今天过好，明天自然不差', from: '自勉' },
+    { text: '专注当下，减少内耗', from: '自勉' },
+    { text: '完成比完美更重要', from: '硅谷格言' },
+    { text: '自律即自由', from: '康德' }
+  ],
+  city: { name: '广州', lat: 23.1291, lon: 113.2644 },
+  weather: null, weatherAt: 0,
+  countdowns: [
+    { id: uid(), emoji: '🚀', name: '发布会',     date: off(-3),  pin: true },
+    { id: uid(), emoji: '🎑', name: '中秋节',     date: off(18) },
+    { id: uid(), emoji: '🎃', name: '万圣夜',     date: off(54) },
+    { id: uid(), emoji: '🎂', name: '女朋友生日', date: off(362) },
+    { id: uid(), emoji: '💰', name: '工资',       date: off(3) }
+  ],
+  pomodoro: { task: '阅读《苏菲的世界》', minutes: 25, remain: 1500, running: false,
+              endAt: 0, done: 0, doneDate: '' },
+  files: [
+    { id: uid(), name: 'group', tag: 'md',  at: Date.now() - 7 * 3600e3 },
+    { id: uid(), name: 'group', tag: 'csv', at: Date.now() - 7 * 3600e3 },
+    { id: uid(), name: 'A_My_Island', tag: 'md', at: Date.now() - 26 * 3600e3 },
+    { id: uid(), name: '日记', tag: 'md', at: Date.now() - 3 * DAY },
+    { id: uid(), name: '读书笔记', tag: 'md', at: Date.now() - 5 * DAY }
+  ],
+  todos: [
+    { id: uid(), name: '每天刷牙', zone: '第四分区', type: '生活·梳洗', tags: '生活·健康',
+      time: '07:30', repeat: 'daily', doneDate: '', n: 3 },
+    { id: uid(), name: '回复邮件和消息', zone: '第三分区', type: '循环任务', tags: '',
+      time: '08:00', repeat: 'daily', doneDate: '', n: 3 },
+    { id: uid(), name: '高等数学', zone: '第三分区', type: '循环任务', tags: '',
+      time: '08:30', repeat: 'weekday', doneDate: '', n: 3 },
+    { id: uid(), name: '英语课', zone: '第三分区', type: '循环任务', tags: '',
+      time: '09:00', repeat: 'weekday', doneDate: '', n: 3 }
+  ],
+  events: [
+    { id: uid(), name: '到公司，整理今天要做的事', zone: '第三分区', type: '单张计划', date: off(0) },
+    { id: uid(), name: '食堂吃午饭',              zone: '第三分区', type: '单张计划', date: off(0) },
+    { id: uid(), name: '图书馆写作业',            zone: '第三分区', type: '单张计划', date: off(-1) },
+    { id: uid(), name: '操场跑步 30 分钟',        zone: '第三分区', type: '单张计划', date: off(2) },
+    { id: uid(), name: '小组会议',                zone: '第二分区', type: '单张计划', date: off(5) },
+    { id: uid(), name: '交课程作业',              zone: '第三分区', type: '单张计划', date: off(8) }
+  ],
+  progress: [
+    { id: uid(), name: '项目', emoji: '📁', items: [
+      { id: uid(), emoji: '📋', name: '年度目标', cur: 7,  total: 12,   unit: '目标', step: 1 },
+      { id: uid(), emoji: '✍️', name: '论文',     cur: 42000, total: 80000, unit: '字', step: 1000 }
+    ]},
+    { id: uid(), name: '学习', emoji: '📚', items: [
+      { id: uid(), emoji: '📖', name: '苏菲的世界', cur: 50,  total: 100,  unit: '%', step: 1 },
+      { id: uid(), emoji: '📕', name: '百年孤独',   cur: 120, total: 1000, unit: '页', step: 1 }
+    ]},
+    { id: uid(), name: '番剧', emoji: '🍿', items: [
+      { id: uid(), emoji: '📺', name: '三体',       cur: 11, total: 30, unit: '集', step: 11 },
+      { id: uid(), emoji: '🎬', name: '权力的游戏', cur: 5,  total: 10, unit: '集', step: 5 }
+    ]},
+    { id: uid(), name: '生活', emoji: '🏃', items: [
+      { id: uid(), emoji: '🏃', name: '跑步', cur: 76, total: 100, unit: 'km', step: 1 },
+      { id: uid(), emoji: '⚖️', name: '体重', cur: 65, total: 100, unit: 'kg', step: 1 }
+    ]}
+  ],
+  ui: { month: null, sel: null, view: 'd' }
+});
+
+/* ==================== 状态读写 ==================== */
+let DB;
+let STORAGE_OK = true;
+function storageProbe(){
+  try {
+    localStorage.setItem('__probe__', '1');
+    localStorage.removeItem('__probe__');
+    return true;
+  } catch (e){ return false; }
+}
+function load(){
+  STORAGE_OK = storageProbe();
+  try {
+    const raw = STORAGE_OK ? localStorage.getItem(KEY) : null;
+    DB = raw ? Object.assign(DEFAULT(), JSON.parse(raw)) : DEFAULT();
+  } catch (e){ DB = DEFAULT(); }
+  if (!DB.progress || !DB.progress.length) DB.progress = DEFAULT().progress;
+}
+let saveTimer = null;
+function save(now){
+  clearTimeout(saveTimer);
+  const doIt = () => {
+    if (!STORAGE_OK) return;                 // 存不了就只留在内存里
+    try { localStorage.setItem(KEY, JSON.stringify(DB)); }
+    catch (e){ toast('保存失败：存储空间可能已满'); }
+  };
+  if (now) doIt(); else saveTimer = setTimeout(doIt, 300);
+}
+
+/* ==================== 弹窗表单 ==================== */
+let MODAL = null;
+function openForm(cfg){
+  MODAL = cfg;
+  $('#modalTitle').textContent = cfg.title || '编辑';
+  const body = $('#modalBody');
+  body.innerHTML = '';
+  (cfg.fields || []).forEach(f => {
+    const wrap = document.createElement('div');
+    wrap.className = 'fld';
+    const val = cfg.values && cfg.values[f.k] !== undefined ? cfg.values[f.k] : (f.value !== undefined ? f.value : '');
+    let inner = '';
+    if (f.type === 'select'){
+      inner = '<select data-k="' + f.k + '">' +
+        f.options.map(o => '<option value="' + esc(o.v) + '"' + (String(val) === String(o.v) ? ' selected' : '') +
+          '>' + esc(o.t) + '</option>').join('') + '</select>';
+    } else if (f.type === 'textarea'){
+      inner = '<textarea data-k="' + f.k + '" rows="3">' + esc(val) + '</textarea>';
+    } else {
+      inner = '<input data-k="' + f.k + '" type="' + (f.type || 'text') + '" value="' + esc(val) + '"' +
+        (f.step ? ' step="' + f.step + '"' : '') + (f.placeholder ? ' placeholder="' + esc(f.placeholder) + '"' : '') + '>';
+    }
+    wrap.innerHTML = '<label>' + esc(f.label) + '</label>' + inner +
+      (f.hint ? '<div class="hint">' + esc(f.hint) + '</div>' : '');
+    body.appendChild(wrap);
+  });
+  $('#modalDel').style.display = cfg.onDelete ? '' : 'none';
+  $('#modalDel').textContent = '删除';
+  $('#modal').classList.add('on');
+  const first = body.querySelector('input,select,textarea');
+  if (first) setTimeout(() => first.focus(), 60);
+}
+function closeForm(){ $('#modal').classList.remove('on'); MODAL = null; }
+function modalCollect(){
+  const out = {};
+  $$('#modalBody [data-k]').forEach(el => {
+    let v = el.value;
+    if (el.type === 'number') v = v === '' ? 0 : Number(v);
+    out[el.dataset.k] = v;
+  });
+  return out;
+}
+$('#modalClose').onclick = closeForm;
+$('#modalCancel').onclick = closeForm;
+$('#modal').onclick = e => { if (e.target.id === 'modal') closeForm(); };
+$('#modalOk').onclick = () => {
+  if (!MODAL) return;
+  const data = modalCollect();
+  if (MODAL.onSave) MODAL.onSave(data);
+  closeForm();
+};
+$('#modalDel').onclick = () => {
+  if (!MODAL || !MODAL.onDelete) return;
+  const btn = $('#modalDel');
+  if (btn.dataset.armed !== '1'){
+    btn.dataset.armed = '1';
+    btn.textContent = '再点一次确认删除';
+    return;
+  }
+  MODAL.onDelete();
+  closeForm();
+};
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && MODAL) closeForm(); });
+
+/* ==================== 图标 / 映射 ==================== */
+const WD_FULL = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+const WD_SHORT = ['日', '一', '二', '三', '四', '五', '六'];
+
+/* WMO 天气代码 → 图标 + 文案 */
+const WMO = {
+  0:  ['☀️', '晴'],          1:  ['🌤️', '少云'],      2:  ['⛅', '多云'],       3:  ['☁️', '阴'],
+  45: ['🌫️', '雾'],         48: ['🌫️', '雾凇'],
+  51: ['🌦️', '小毛毛雨'],   53: ['🌦️', '毛毛雨'],    55: ['🌦️', '大毛毛雨'],
+  56: ['🌧️', '冻毛毛雨'],   57: ['🌧️', '冻毛毛雨'],
+  61: ['🌦️', '小雨'],       63: ['🌧️', '中雨'],      65: ['🌧️', '大雨'],
+  66: ['🌧️', '冻雨'],       67: ['🌧️', '冻雨'],
+  71: ['🌨️', '小雪'],       73: ['🌨️', '中雪'],      75: ['❄️', '大雪'],      77: ['🌨️', '米雪'],
+  80: ['🌦️', '阵雨'],       81: ['🌧️', '强阵雨'],    82: ['⛈️', '暴雨'],
+  85: ['🌨️', '阵雪'],       86: ['❄️', '强阵雪'],
+  95: ['⛈️', '雷阵雨'],     96: ['⛈️', '雷阵雨伴冰雹'], 99: ['⛈️', '强雷暴伴冰雹']
+};
+function wmo(code){
+  return WMO[code] || ['🌡️', '未知'];
+}
+const WIND_DIR = ['北', '东北', '东', '东南', '南', '西南', '西', '西北'];
+function windDir(deg){
+  if (deg === null || deg === undefined) return '—';
+  return WIND_DIR[Math.round(((deg % 360) + 360) % 360 / 45) % 8];
+}
+
+/* ============================================================
+   横幅
+   ============================================================ */
+function renderBanner(){
+  const b = DB.banner;
+  const el = $('#banner');
+  $('#bannerMotto').textContent = b.text || '请记录你的座右铭';
+  if (b.img){
+    el.style.backgroundImage = 'url("' + b.img + '")';
+    el.style.backgroundSize = 'cover';
+    el.style.backgroundPosition = 'center';
+    el.classList.add('has-img');
+  } else {
+    el.style.backgroundImage = '';
+    el.classList.remove('has-img');
+  }
+}
+$('#bannerMotto').onclick = () => $('#btnBannerText').click();
+$('#btnBannerText').onclick = () => openForm({
+  title: '横幅文字',
+  fields: [{ k: 'text', label: '文字', placeholder: '请记录你的座右铭' }],
+  values: DB.banner,
+  onSave: d => { DB.banner.text = d.text || '请记录你的座右铭'; save(); renderBanner(); toast('已更新'); }
+});
+$('#btnBannerBg').onclick = () => {
+  const act = confirm('确定 = 从相册选择图片\n取消 = 手动填图片网址');
+  if (act){ $('#filePick').click(); return; }
+  openForm({
+    title: '横幅背景图',
+    fields: [{ k: 'img', label: '图片网址', placeholder: 'https://… 或留空恢复默认渐变',
+               hint: '留空则使用内置渐变背景' }],
+    values: DB.banner,
+    onSave: d => { DB.banner.img = d.img.trim(); save(); renderBanner(); toast('已更新'); }
+  });
+};
+$('#filePick').onchange = e => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  const fr = new FileReader();
+  fr.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 1280;
+      const sc = Math.min(1, max / img.width);
+      const cv = document.createElement('canvas');
+      cv.width = Math.round(img.width * sc);
+      cv.height = Math.round(img.height * sc);
+      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      DB.banner.img = cv.toDataURL('image/jpeg', 0.78);
+      save(true); renderBanner(); toast('背景已更新');
+    };
+    img.onerror = () => toast('图片读取失败');
+    img.src = fr.result;
+  };
+  fr.readAsDataURL(f);
+  e.target.value = '';
+};
+
+/* ============================================================
+   日历
+   ============================================================ */
+function calMonth(){ return DB.ui.month || ymd(new Date()).slice(0, 7); }
+function renderCalendar(){
+  const [Y, M] = calMonth().split('-').map(Number);
+  $('#calTitle').textContent = Y + '年' + M + '月';
+
+  const first = new Date(Y, M - 1, 1);
+  const lead = (first.getDay() + 6) % 7;              // 周一为一周起点
+  const days = new Date(Y, M, 0).getDate();
+  const start = new Date(Y, M - 1, 1 - lead);
+  const today = todayStr();
+  const sel = DB.ui.sel || today;
+
+  let html = '';
+  for (let i = 0; i < 42; i++){
+    const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+    const ds = ymd(d);
+    const isOut = d.getMonth() !== M - 1;
+    const lu = solarToLunar(d.getFullYear(), d.getMonth() + 1, d.getDate());
+    const terms = termOfDate(d.getFullYear(), d.getMonth() + 1, d.getDate());
+    const fests = festivalsOf(d);
+    let label = lu.dayStr;
+    let fest = false;
+    if (lu.d === 1) label = lu.monthStr;
+    if (terms.length){ label = terms[0]; fest = true; }
+    if (fests.length){ label = fests[0]; fest = true; }
+    const cls = ['day'];
+    if (isOut) cls.push('other-month');
+    if (ds === today) cls.push('today');
+    if (ds === sel && ds !== today) cls.push('sel');
+    if (fest && ds !== today) cls.push('fest');
+    html += '<div class="' + cls.join(' ') + '" data-d="' + ds + '">' +
+            '<span class="d">' + d.getDate() + '</span>' +
+            '<span class="l">' + esc(label) + '</span></div>';
+  }
+  $('#calGrid').innerHTML = html;
+
+  /* 左侧大日期 */
+  const sd = parseYmd(sel);
+  const slu = solarToLunar(sd.getFullYear(), sd.getMonth() + 1, sd.getDate());
+  const sterm = termOfDate(sd.getFullYear(), sd.getMonth() + 1, sd.getDate());
+  const sfest = festivalsOf(sd);
+  $('#bigDay').textContent = sd.getDate();
+  $('#bigWd').textContent = WD_FULL[sd.getDay()];
+  $('#bigDate').textContent = sd.getFullYear() + '年' + (sd.getMonth() + 1) + '月' + sd.getDate() + '日';
+  let lun = '农历' + slu.monthStr + slu.dayStr;
+  if (sterm.length) lun += ' · ' + sterm[0];
+  if (sfest.length) lun += ' · ' + sfest[0];
+  $('#bigLunar').textContent = lun;
+  $('#calToday').classList.toggle('on', sel === today);
+}
+$('#calPrev').onclick = () => {
+  const [Y, M] = calMonth().split('-').map(Number);
+  const d = new Date(Y, M - 2, 1);
+  DB.ui.month = ymd(d).slice(0, 7);
+  renderCalendar();
+};
+$('#calNext').onclick = () => {
+  const [Y, M] = calMonth().split('-').map(Number);
+  const d = new Date(Y, M, 1);
+  DB.ui.month = ymd(d).slice(0, 7);
+  renderCalendar();
+};
+$('#calToday').onclick = () => {
+  DB.ui.month = null;
+  DB.ui.sel = null;
+  renderCalendar();
+};
+$('#calGrid').onclick = e => {
+  const cell = e.target.closest('.day');
+  if (!cell) return;
+  DB.ui.sel = cell.dataset.d;
+  renderCalendar();
+  const d = parseYmd(DB.ui.sel);
+  const lu = solarToLunar(d.getFullYear(), d.getMonth() + 1, d.getDate());
+  toast((d.getMonth() + 1) + '月' + d.getDate() + '日 · 农历' + lu.monthStr + lu.dayStr);
+};
+
+/* ============================================================
+   天气
+   ============================================================ */
+function renderWeather(){
+  const w = DB.weather;
+  $('#wxCity').textContent = DB.city.name;
+  if (!w){
+    $('#wxDate').textContent = '点 🎯 自动定位，或 ✎ 手填城市';
+    $('#wxCond').textContent = '暂无数据';
+    ['wxIco', 'wxTemp', 'wxHigh', 'wxLow'].forEach(i => { $('#' + i).textContent = '—'; });
+    $('#wxForecast').innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--tx3);font-size:11px">暂无数据</div>';
+    $('#wxMetrics').innerHTML = '';
+    $('#wxSunrise').textContent = $('#wxSunset').textContent = '—';
+    return;
+  }
+  const cur = w.current;
+  const [ic, tx] = wmo(cur.weather_code);
+  const now = new Date();
+  $('#wxDate').textContent = (now.getMonth() + 1) + '月' + now.getDate() + '日 ' + WD_FULL[now.getDay()];
+  $('#wxIco').textContent = ic;
+  $('#wxCond').textContent = tx;
+  $('#wxTemp').textContent = Math.round(cur.temperature_2m);
+  $('#wxHigh').textContent = Math.round(w.daily.temperature_2m_max[0]);
+  $('#wxLow').textContent = Math.round(w.daily.temperature_2m_min[0]);
+  $('#wxForecast').innerHTML = w.daily.time.map((t, i) => {
+    const d = parseYmd(t);
+    const [fi, ft] = wmo(w.daily.weather_code[i]);
+    const name = i === 0 ? '今天' : WD_FULL[d.getDay()].replace('星期', '周');
+    const dayLbl = (d.getMonth() + 1) + '日';
+    return '<div class="fc-col">' +
+      '<span class="n">' + name + '</span>' +
+      '<span class="i">' + fi + '</span>' +
+      '<span class="h">' + Math.round(w.daily.temperature_2m_max[i]) + '°</span>' +
+      '<span class="lo">' + Math.round(w.daily.temperature_2m_min[i]) + '°</span>' +
+      '<span class="p">' + num(w.daily.precipitation_probability_max[i]) + '%</span>' +
+      '<span class="t">' + dayLbl + '</span></div>';
+  }).join('');
+
+  const m = [
+    ['体感', Math.round(cur.apparent_temperature) + '°'],
+    ['湿度', num(cur.relative_humidity_2m) + '%'],
+    ['降水', num(cur.precipitation) + 'mm'],
+    ['风速', Math.round(cur.wind_speed_10m) + 'km/h'],
+    ['风向', windDir(cur.wind_direction_10m)],
+    ['气压', num(Math.round(cur.surface_pressure))]
+  ];
+  $('#wxMetrics').innerHTML = m.map(x =>
+    '<div>' + x[0] + ' <b>' + esc(x[1]) + '</b></div>').join('');
+  const sr = (w.daily.sunrise[0] || '').slice(11, 16);
+  const ss = (w.daily.sunset[0] || '').slice(11, 16);
+  $('#wxSunrise').textContent = sr || '—';
+  $('#wxSunset').textContent = ss || '—';
+}
+async function fetchWeather(force){
+  if (!force && DB.weather && Date.now() - DB.weatherAt < 30 * 60000){ renderWeather(); return; }
+  const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + DB.city.lat +
+    '&longitude=' + DB.city.lon +
+    '&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_direction_10m,surface_pressure' +
+    '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset' +
+    '&timezone=auto&forecast_days=5';
+  try {
+    const r = await fetch(u, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    DB.weather = await r.json();
+    DB.weatherAt = Date.now();
+    save();
+    renderWeather();
+  } catch (e){
+    renderWeather();
+    if (!DB.weather) $('#wxCond').textContent = '获取失败（' + e.message + '）';
+  }
+}
+/* ---- 定位：优先 GPS，拿不到就退到 IP 定位 ----
+   file:// 下浏览器禁用 Geolocation API，会自动走 IP 定位。
+   IP 定位只依赖公网接口，任何页面都能用，但精度只到城市级。      */
+function geoUsable(){
+  return ('geolocation' in navigator) && window.isSecureContext;
+}
+/* 多个接口依次重试，避免单个被限流（如 ipwho.is 的 429）就整体失效
+   按实测速度排序：ipinfo.io ~0.5s，ipwho.is ~3.8s，geojs.io 兜底 */
+const IP_APIS = [
+  { name: 'ipinfo.io', url: 'https://ipinfo.io/json',
+    pick: j => {
+      if (!j || !j.loc) return null;
+      const p = String(j.loc).split(',');
+      const lat = Number(p[0]), lon = Number(p[1]);
+      if (!isFinite(lat) || !isFinite(lon)) return null;
+      return { lat, lon, name: j.city || j.region || j.country };
+    } },
+  { name: 'ipwho.is', url: 'https://ipwho.is/',
+    pick: j => (j && j.success !== false && j.latitude != null)
+      ? { lat: j.latitude, lon: j.longitude, name: j.city || j.region || j.country } : null },
+  { name: 'geojs.io', url: 'https://get.geojs.io/v1/ip/geo.json',
+    pick: j => (j && j.latitude)
+      ? { lat: Number(j.latitude), lon: Number(j.longitude), name: j.city || j.region || j.country } : null }
+];
+async function ipLocate(){
+  let last = null;
+  for (const api of IP_APIS){
+    try {
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), 5000);
+      const r = await fetch(api.url, { cache: 'no-store', signal: ctl.signal });
+      clearTimeout(timer);
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      const hit = api.pick(await r.json());
+      if (hit && isFinite(hit.lat) && isFinite(hit.lon)) return hit;
+      last = new Error(api.name + ' 未返回坐标');
+    } catch (e){ last = e; }
+  }
+  throw last || new Error('IP 定位失败');
+}
+function gpsLocate(){
+  return new Promise((res, rej) => {
+    navigator.geolocation.getCurrentPosition(
+      p => res({ lat: p.coords.latitude, lon: p.coords.longitude, name: '当前位置' }),
+      e => rej(e),
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 });
+  });
+}
+async function doLocate(silent){
+  if (!silent) $('#wxCond').textContent = '定位中…';
+  let loc = null, how = '';
+  if (geoUsable()){
+    try { loc = await gpsLocate(); how = '卫星定位'; } catch (e){ /* 被拒或超时，转 IP */ }
+  }
+  if (!loc){
+    try { loc = await ipLocate(); how = 'IP 定位'; }
+    catch (e){
+      if (!silent){ toast('定位失败：' + e.message + '，可点 ✎ 手填城市'); renderWeather(); }
+      return false;
+    }
+  }
+  DB.city = { name: loc.name || '当前位置', lat: loc.lat, lon: loc.lon };
+  DB.citySet = 'auto';
+  save();
+  if (!silent) toast('已定位（' + how + '）：' + DB.city.name);
+  fetchWeather(true);
+  return true;
+}
+$('#wxGeo').onclick = () => doLocate(false);
+
+$('#wxLoc').onclick = () => openForm({
+  title: '设置城市',
+  fields: [{ k: 'name', label: '城市名', placeholder: '例如：广州 / 北京 / Shanghai',
+             hint: '会联网查询该城市的经纬度，再取天气' }],
+  values: { name: DB.city.name },
+  onSave: async d => {
+    const name = (d.name || '').trim();
+    if (!name) return;
+    $('#wxCond').textContent = '查询中…';
+    try {
+      const r = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' +
+        encodeURIComponent(name) + '&count=1&language=zh');
+      const j = await r.json();
+      if (!j.results || !j.results.length){ toast('没找到这个城市'); return; }
+      const g = j.results[0];
+      DB.city = { name: g.name || name, lat: g.latitude, lon: g.longitude };
+      DB.citySet = 'manual';
+      save(); toast('已切到 ' + DB.city.name);
+      fetchWeather(true);
+    } catch (e){ toast('查询失败：' + e.message); }
+  }
+});
+
+/* ============================================================
+   倒计时
+   ============================================================ */
+function cdInfo(item){
+  const d = parseYmd(item.date);
+  const n = diffDays(d, new Date());
+  return { d, n, past: n < 0, today: n === 0 };
+}
+function renderCountdown(){
+  const list = DB.countdowns;
+  const pin = list.find(c => c.pin) || list[0];
+  if (!pin){
+    $('#cdMain').innerHTML = '<div class="cd-empty">还没有倒计时<br>点右上角 ＋ 添加</div>';
+    $('#cdList').innerHTML = '';
+    return;
+  }
+  const info = cdInfo(pin);
+  $('#cdMain').innerHTML =
+    '<div class="cd-name">' + esc(pin.name) + '</div>' +
+    '<div class="cd-date">' + info.d.getFullYear() + '年' + (info.d.getMonth() + 1) + '月' + info.d.getDate() + '日</div>' +
+    '<div class="cd-num' + (info.past ? ' past' : '') + '">' + (info.past ? info.n : info.n) + '</div>' +
+    '<div class="cd-unit">天</div>' +
+    '<div class="cd-state">' + (info.today ? '就是今天' : info.past ? '已经过去' : '还有 ' + info.n + ' 天') + '</div>';
+
+  const others = list.filter(c => c.id !== pin.id);
+  $('#cdList').innerHTML = others.length ? others.map(c => {
+    const i = cdInfo(c);
+    return '<div class="cd-row" data-id="' + c.id + '">' +
+      '<span class="e">' + (c.emoji || '📅') + '</span>' +
+      '<span class="n">' + esc(c.name) + '</span>' +
+      '<span class="v' + (i.past ? ' past' : '') + '">' + (i.past ? i.n : i.n) + '天</span>' +
+      '<span class="d">' + i.d.getFullYear() + '-' + pad(i.d.getMonth() + 1) + '-' + pad(i.d.getDate()) + '</span>' +
+      '</div>';
+  }).join('') : '<div class="cd-empty">暂无其他</div>';
+  $('#cdList').onclick = e => {
+    const row = e.target.closest('.cd-row');
+    if (row) editCountdown(row.dataset.id);
+  };
+}
+function editCountdown(id){
+  const it = DB.countdowns.find(c => c.id === id);
+  if (!it) return;
+  openForm({
+    title: '编辑倒计时',
+    fields: [
+      { k: 'emoji', label: '图标', hint: '一个 emoji，例如 🎂 💰 🚀' },
+      { k: 'name', label: '名称' },
+      { k: 'date', label: '目标日期', type: 'date' },
+      { k: 'pin', label: '设为置顶（左侧大显示）', type: 'select',
+        options: [{ v: 'no', t: '否' }, { v: 'yes', t: '是' }] }
+    ],
+    values: { emoji: it.emoji, name: it.name, date: it.date, pin: it.pin ? 'yes' : 'no' },
+    onSave: d => {
+      it.emoji = d.emoji || '📅';
+      it.name = d.name || '未命名';
+      it.date = d.date || todayStr();
+      if (d.pin === 'yes') DB.countdowns.forEach(c => { c.pin = false; });
+      it.pin = d.pin === 'yes';
+      save(); renderCountdown(); toast('已保存');
+    },
+    onDelete: () => {
+      DB.countdowns = DB.countdowns.filter(c => c.id !== id);
+      if (DB.countdowns.length && !DB.countdowns.some(c => c.pin)) DB.countdowns[0].pin = true;
+      save(); renderCountdown(); toast('已删除');
+    }
+  });
+}
+$('#cdAdd').onclick = () => {
+  openForm({
+    title: '添加倒计时',
+    fields: [
+      { k: 'emoji', label: '图标', value: '📅' },
+      { k: 'name', label: '名称', placeholder: '例如：考试 / 生日' },
+      { k: 'date', label: '目标日期', type: 'date', value: todayStr() },
+      { k: 'pin', label: '设为置顶', type: 'select',
+        options: [{ v: 'no', t: '否' }, { v: 'yes', t: '是' }] }
+    ],
+    onSave: d => {
+      if (!d.name) { toast('请填写名称'); return; }
+      const it = { id: uid(), emoji: d.emoji || '📅', name: d.name,
+                   date: d.date || todayStr(), pin: d.pin === 'yes' };
+      if (it.pin) DB.countdowns.forEach(c => { c.pin = false; });
+      DB.countdowns.push(it);
+      save(); renderCountdown(); toast('已添加');
+    }
+  });
+};
+
+/* ============================================================
+   番茄钟
+   ============================================================ */
+const RING_C = 2 * Math.PI * 88;
+function renderPomodoro(){
+  const p = DB.pomodoro;
+  const total = p.minutes * 60;
+  const remain = p.running ? Math.max(0, Math.round((p.endAt - Date.now()) / 1000)) : p.remain;
+  $('#pomoTask').textContent = p.task || '专注';
+  $('#pomoTime').textContent = pad(Math.floor(remain / 60)) + ':' + pad(remain % 60);
+  const frac = total ? Math.max(0, Math.min(1, remain / total)) : 0;
+  $('#ringFg').setAttribute('stroke-dasharray', RING_C.toFixed(1));
+  $('#ringFg').setAttribute('stroke-dashoffset', (RING_C * (1 - frac)).toFixed(1));
+  $('#pomoToggle').textContent = p.running ? '暂停' : (remain < total ? '继续' : '开始');
+  $('#pomoDone').textContent = (p.doneDate === todayStr()) ? p.done : 0;
+}
+function pomoFinish(){
+  const p = DB.pomodoro;
+  const day = todayStr();
+  if (p.doneDate !== day){ p.doneDate = day; p.done = 0; }
+  p.done++;
+  p.running = false;
+  p.remain = p.minutes * 60;
+  save(); renderPomodoro();
+  try {
+    const ac = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.frequency.value = 880; o.type = 'sine';
+    g.gain.setValueAtTime(0.001, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.25, ac.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 1.1);
+    o.start(); o.stop(ac.currentTime + 1.15);
+  } catch (e){ /* 无音频设备时忽略 */ }
+  toast('番茄钟完成！休息一下吧');
+}
+$('#pomoToggle').onclick = () => {
+  const p = DB.pomodoro;
+  if (p.running){
+    p.remain = Math.max(0, Math.round((p.endAt - Date.now()) / 1000));
+    p.running = false;
+  } else {
+    if (p.remain <= 0) p.remain = p.minutes * 60;
+    p.endAt = Date.now() + p.remain * 1000;
+    p.running = true;
+  }
+  save(); renderPomodoro();
+};
+$('#pomoReset').onclick = () => {
+  const p = DB.pomodoro;
+  p.running = false; p.remain = p.minutes * 60;
+  save(); renderPomodoro(); toast('已重置');
+};
+$('#pomoSet').onclick = () => {
+  const p = DB.pomodoro;
+  openForm({
+    title: '番茄钟设置',
+    fields: [
+      { k: 'task', label: '正在做的事', placeholder: '阅读《苏菲的世界》' },
+      { k: 'minutes', label: '时长（分钟）', type: 'number', step: '1' }
+    ],
+    values: p,
+    onSave: d => {
+      p.task = d.task || '专注';
+      p.minutes = Math.max(1, Math.min(180, Number(d.minutes) || 25));
+      p.running = false; p.remain = p.minutes * 60;
+      save(); renderPomodoro(); toast('已设置');
+    }
+  });
+};
+
+/* ============================================================
+   座右铭
+   ============================================================ */
+function renderMotto(){
+  $('#mottoText').textContent = DB.motto.text;
+  $('#mottoFrom').textContent = '— ' + (DB.motto.from || '默认');
+}
+$('#mottoNext').onclick = () => {
+  const pool = DB.mottos.filter(m => m.text !== DB.motto.text);
+  if (!pool.length){ toast('座右铭列表只有一条'); return; }
+  DB.motto = pool[Math.floor(Math.random() * pool.length)];
+  save(); renderMotto();
+};
+$('#mottoEdit').onclick = () => {
+  openForm({
+    title: '座右铭',
+    fields: [
+      { k: 'text', label: '当前座右铭', type: 'textarea' },
+      { k: 'from', label: '出处', placeholder: '默认' },
+      { k: 'pool', label: '候选列表（每行一条）', type: 'textarea',
+        hint: '点「换一条」会从这里随机挑；当前这条会自动进列表' }
+    ],
+    values: {
+      text: DB.motto.text, from: DB.motto.from,
+      pool: DB.mottos.map(m => m.from && m.from !== '默认' ? m.text + ' | ' + m.from : m.text).join('\n')
+    },
+    onSave: d => {
+      DB.motto = { text: d.text || '请记录你的座右铭', from: d.from || '默认' };
+      const lines = (d.pool || '').split('\n').map(s => s.trim()).filter(Boolean);
+      const list = lines.map(l => {
+        const i = l.lastIndexOf('|');
+        return i > 0 ? { text: l.slice(0, i).trim(), from: l.slice(i + 1).trim() }
+                     : { text: l, from: '默认' };
+      });
+      if (!list.some(m => m.text === DB.motto.text)) list.unshift(DB.motto);
+      DB.mottos = list.length ? list : [DB.motto];
+      save(); renderMotto(); toast('已保存');
+    }
+  });
+};
+
+/* ============================================================
+   最近文件
+   ============================================================ */
+function renderFiles(){
+  const list = DB.files.slice().sort((a, b) => b.at - a.at);
+  $('#filesList').innerHTML = list.length ? list.map(f =>
+    '<div class="file-row" data-id="' + f.id + '">' +
+      '<span class="ic">' + (f.tag === 'img' ? '🖼️' : f.tag === 'csv' ? '📊' : '📄') + '</span>' +
+      '<span class="n">' + esc(f.name) + '</span>' +
+      '<span class="t">' + relTime(f.at) + '</span>' +
+      '<span class="tag ' + esc(f.tag) + '">' + esc(f.tag) + '</span>' +
+    '</div>').join('') : '<div class="file-empty">暂无记录</div>';
+  $('#filesList').onclick = e => {
+    const row = e.target.closest('.file-row');
+    if (row) editFile(row.dataset.id);
+  };
+}
+function editFile(id){
+  const f = DB.files.find(x => x.id === id);
+  if (!f) return;
+  openForm({
+    title: '编辑文件',
+    fields: [
+      { k: 'name', label: '名称' },
+      { k: 'tag', label: '类型', type: 'select',
+        options: [{ v: 'md', t: 'md' }, { v: 'csv', t: 'csv' }, { v: 'img', t: 'img' }, { v: 'pdf', t: 'pdf' }] }
+    ],
+    values: f,
+    onSave: d => { f.name = d.name || '未命名'; f.tag = d.tag; f.at = Date.now(); save(); renderFiles(); toast('已保存'); },
+    onDelete: () => { DB.files = DB.files.filter(x => x.id !== id); save(); renderFiles(); toast('已删除'); }
+  });
+}
+$('#fileAdd').onclick = () => {
+  openForm({
+    title: '添加文件记录',
+    fields: [
+      { k: 'name', label: '名称', placeholder: '例如：读书笔记' },
+      { k: 'tag', label: '类型', type: 'select',
+        options: [{ v: 'md', t: 'md' }, { v: 'csv', t: 'csv' }, { v: 'img', t: 'img' }, { v: 'pdf', t: 'pdf' }] }
+    ],
+    onSave: d => {
+      if (!d.name) return;
+      DB.files.push({ id: uid(), name: d.name, tag: d.tag, at: Date.now() });
+      save(); renderFiles(); toast('已添加');
+    }
+  });
+};
+
+/* ============================================================
+   今日日程
+   ============================================================ */
+function todoRunsOn(t, date){
+  const wd = date.getDay();
+  switch (t.repeat){
+    case 'daily':   return true;
+    case 'weekday': return wd >= 1 && wd <= 5;
+    case 'weekly':  return t.wd === undefined ? true : Number(t.wd) === wd;
+    case 'once':    return t.date === ymd(date);
+    default:        return true;
+  }
+}
+function renderSchedule(){
+  const today = new Date();
+  const ts = ymd(today);
+  const active = DB.todos.filter(t => todoRunsOn(t, today));
+  const autoSort = document.querySelector('.tb[data-s="auto"]').classList.contains('on');
+  let pending = active.filter(t => t.doneDate !== ts);
+  if (autoSort) pending = pending.slice().sort((a, b) => (a.time || '99:99').localeCompare(b.time || '99:99'));
+  const done = active.filter(t => t.doneDate === ts);
+
+  /* 日期事件：按 日/周/月/年 视图取范围，「展开」则忽略范围 */
+  const expand = document.querySelector('.tb[data-s="expand"]').classList.contains('on');
+  const span = { d: 0, w: 7, m: 31, y: 365 }[DB.ui.view] || 0;
+  const evs = DB.events.slice().sort((a, b) => a.date.localeCompare(b.date));
+  const shown = (span === 0 && !expand) ? evs.filter(e => e.date === ts || e.date < ts) : evs;
+  const overdue = shown.filter(e => e.date < ts);
+  const soon = shown.filter(e => e.date >= ts);
+  const ordered = overdue.concat(soon);
+
+  document.querySelectorAll('.sched-col .badge')[0].textContent = pending.length;
+  $('#doneBadge').textContent = done.length;
+  $('#eventBadge').textContent = ordered.length;
+  $('#schedSub').textContent = (today.getMonth() + 1) + '月' + today.getDate() + '日 ' + WD_FULL[today.getDay()] +
+    ' · ' + pending.length + ' 项待完成 · ' + ordered.length + ' 个日期事件';
+
+  const groupBy = document.querySelector('.tb[data-s="group"]').classList.contains('on');
+  const colorBy = document.querySelector('.tb[data-s="color"]').classList.contains('on');
+  const zoneCls = z => {
+    if (!colorBy) return '';
+    return z && z.indexOf('第三') >= 0 ? ' style="border-left:3px solid var(--blue)"'
+         : z && z.indexOf('第四') >= 0 ? ' style="border-left:3px solid var(--green)"'
+         : z && z.indexOf('第二') >= 0 ? ' style="border-left:3px solid var(--orange)"' : '';
+  };
+
+  function tkHtml(t, isDone){
+    const bits = [];
+    if (t.zone) bits.push(esc(t.zone));
+    if (t.type) bits.push(esc(t.type));
+    if (t.tags) bits.push(esc(t.tags));
+    const meta1 = bits.join('<span class="sep">·</span>');
+    const meta2 = [];
+    if (t.repeat === 'once' && t.date) meta2.push(t.date);
+    if (t.time) meta2.push(t.time);
+    return '<div class="tk' + (isDone ? ' done' : '') + '" data-id="' + t.id + '"' + zoneCls(t.zone) + '>' +
+      '<div class="tk-acts"><button data-a="edit">✎</button><button data-a="del">✕</button></div>' +
+      '<div class="tk-top"><span class="tk-ck" data-a="ck">✓</span>' +
+      '<span class="tk-name">' + esc(t.name) + '</span></div>' +
+      (meta1 ? '<div class="tk-meta">' + meta1 + '</div>' : '') +
+      (meta2.length ? '<div class="tk-meta"><span>' + meta2.join(' · ') + '</span></div>' : '') +
+      (t.n ? '<span class="tk-n">' + esc(t.n) + '</span>' : '') +
+      '</div>';
+  }
+  function groupHtml(arr, isDone){
+    if (!arr.length) return '';
+    if (!groupBy) return arr.map(t => tkHtml(t, isDone)).join('');
+    const g = {};
+    arr.forEach(t => { const k = t.zone || '未分组'; (g[k] = g[k] || []).push(t); });
+    return Object.keys(g).map(k =>
+      '<div style="font-size:10px;color:var(--tx3);font-weight:700;margin:4px 0 1px">' + esc(k) + '</div>' +
+      g[k].map(t => tkHtml(t, isDone)).join('')).join('');
+  }
+
+  $('#todoList').innerHTML = pending.length
+    ? groupHtml(pending, false)
+    : '<div class="col-empty">今天没有待办</div>';
+  $('#doneList').innerHTML = done.length
+    ? groupHtml(done, true)
+    : '<div class="col-empty">尚无已完成任务</div>';
+
+  $('#eventList').innerHTML = ordered.length ? ordered.map(e => {
+    const late = e.date < ts;
+    const d = parseYmd(e.date);
+    const n = diffDays(d, today);
+    return '<div class="tk" data-id="' + e.id + '"' + zoneCls(e.zone) + '>' +
+      '<div class="tk-acts"><button data-a="edit">✎</button><button data-a="del">✕</button></div>' +
+      '<div class="tk-top"><span class="tk-name" style="font-weight:600">' + esc(e.name) + '</span></div>' +
+      '<div class="tk-meta">' + (e.zone ? esc(e.zone) : '') +
+        '<span class="sep">·</span>' + esc(e.type || '计划') +
+        '<span class="sep">·</span><span class="' + (late ? 'late' : '') + '">' +
+        (late ? '已过期 ' : n === 0 ? '今天 ' : '还有 ' + n + ' 天 ') + e.date + '</span></div>' +
+      '</div>';
+  }).join('') : '<div class="col-empty">暂无日期事件</div>';
+}
+function bindList(el){
+  el.onclick = e => {
+    const card = e.target.closest('.tk');
+    if (!card) return;
+    const id = card.dataset.id;
+    const isEvent = el.id === 'eventList';
+    const act = e.target.dataset.a;
+    if (act === 'ck' && !isEvent){
+      const t = DB.todos.find(x => x.id === id);
+      if (t){ t.doneDate = t.doneDate === todayStr() ? '' : todayStr(); save(); renderSchedule(); }
+      return;
+    }
+    if (act === 'del'){
+      if (isEvent) DB.events = DB.events.filter(x => x.id !== id);
+      else DB.todos = DB.todos.filter(x => x.id !== id);
+      save(); renderSchedule(); toast('已删除');
+      return;
+    }
+    if (isEvent) editEvent(id); else editTodo(id);
+  };
+}
+function editTodo(id){
+  const t = DB.todos.find(x => x.id === id);
+  if (!t) return;
+  openForm({
+    title: '编辑待办',
+    fields: [
+      { k: 'name', label: '名称' },
+      { k: 'zone', label: '分区', placeholder: '第三分区' },
+      { k: 'type', label: '类型', placeholder: '循环任务 / 单张计划' },
+      { k: 'tags', label: '标签', hint: '用 · 分隔，可留空' },
+      { k: 'time', label: '时间', type: 'time' },
+      { k: 'repeat', label: '重复', type: 'select', options: [
+        { v: 'daily', t: '每天' }, { v: 'weekday', t: '工作日（周一至周五）' },
+        { v: 'weekly', t: '每周' }, { v: 'once', t: '仅一次（按下方的日期）' }] },
+      { k: 'date', label: '指定日期（仅「仅一次」时生效）', type: 'date' },
+      { k: 'n', label: '右侧数量标记', type: 'number' },
+      { k: 'wd', label: '每周几（0=周日 … 6=周六）', type: 'number' }
+    ],
+    values: t,
+    onSave: d => {
+      Object.assign(t, {
+        name: d.name || t.name, zone: d.zone, type: d.type, tags: d.tags,
+        time: d.time, repeat: d.repeat, date: d.date,
+        n: Number(d.n) || 0, wd: d.wd === '' ? undefined : Number(d.wd)
+      });
+      save(); renderSchedule(); toast('已保存');
+    },
+    onDelete: () => { DB.todos = DB.todos.filter(x => x.id !== id); save(); renderSchedule(); toast('已删除'); }
+  });
+}
+function editEvent(id){
+  const e2 = DB.events.find(x => x.id === id);
+  if (!e2) return;
+  openForm({
+    title: '编辑日期事件',
+    fields: [
+      { k: 'name', label: '名称' },
+      { k: 'zone', label: '分区', placeholder: '第三分区' },
+      { k: 'type', label: '类型', placeholder: '单张计划' },
+      { k: 'date', label: '日期', type: 'date' }
+    ],
+    values: e2,
+    onSave: d => {
+      Object.assign(e2, { name: d.name || e2.name, zone: d.zone, type: d.type, date: d.date });
+      save(); renderSchedule(); toast('已保存');
+    },
+    onDelete: () => { DB.events = DB.events.filter(x => x.id !== id); save(); renderSchedule(); toast('已删除'); }
+  });
+}
+$('#schedAdd').onclick = () => openForm({
+  title: '新增',
+  fields: [
+    { k: 'kind', label: '添加类型', type: 'select',
+      options: [{ v: 'todo', t: '待办任务' }, { v: 'event', t: '日期事件' }] },
+    { k: 'name', label: '名称' },
+    { k: 'zone', label: '分区', value: '第三分区' },
+    { k: 'type', label: '类型', value: '循环任务' },
+    { k: 'time', label: '时间', type: 'time', value: '09:00' },
+    { k: 'date', label: '日期', type: 'date', value: todayStr() }
+  ],
+  onSave: d => {
+    if (!d.name){ toast('请填写名称'); return; }
+    if (d.kind === 'event'){
+      DB.events.push({ id: uid(), name: d.name, zone: d.zone, type: d.type || '单张计划', date: d.date || todayStr() });
+      toast('已添加日期事件');
+    } else {
+      DB.todos.push({ id: uid(), name: d.name, zone: d.zone, type: d.type, tags: '',
+                      time: d.time, repeat: 'daily', doneDate: '', n: 0 });
+      toast('已添加待办');
+    }
+    save(); renderSchedule();
+  }
+});
+$$('.tb[data-s]').forEach(b => {
+  if (b.id === 'schedAdd') return;
+  b.onclick = () => { b.classList.toggle('on'); renderSchedule(); };
+});
+$$('.tb[data-v]').forEach(b => {
+  b.onclick = () => {
+    $$('.tb[data-v]').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    DB.ui.view = b.dataset.v;
+    save(); renderSchedule();
+  };
+});
+
+/* ============================================================
+   进度总览
+   ============================================================ */
+function progStats(){
+  const items = [];
+  DB.progress.forEach(g => g.items.forEach(i => items.push(i)));
+  const pcts = items.map(i => i.total ? Math.max(0, Math.min(100, Math.round(i.cur / i.total * 100))) : 0);
+  const avg = pcts.length ? Math.round(pcts.reduce((a, b) => a + b, 0) / pcts.length) : 0;
+  return { items, avg };
+}
+function renderProgress(){
+  const { items, avg } = progStats();
+  $('#progSub').textContent = items.length + ' 项进行中 · 平均 ' + avg + '%';
+  $('#progGroups').innerHTML = DB.progress.map(g =>
+    '<div class="pgrp" data-g="' + g.id + '">' +
+      '<div class="pgrp-head"><span class="e">' + (g.emoji || '📁') + '</span>' +
+        '<span>' + esc(g.name) + '</span><span class="badge">' + g.items.length + ' 项</span></div>' +
+      '<div class="pgrp-list">' +
+        g.items.map(i => {
+          const pct = i.total ? Math.max(0, Math.min(100, Math.round(i.cur / i.total * 100))) : 0;
+          const cls = pct >= 100 ? 'ok' : pct < 30 ? 'warn' : '';
+          return '<div class="pi" data-g="' + g.id + '" data-i="' + i.id + '">' +
+            '<div class="pi-top"><span class="pi-ic">' + (i.emoji || '📌') + '</span>' +
+            '<span class="pi-name">' + esc(i.name) + '</span>' +
+            '<span class="pi-val">' + i.cur + '<i>' + esc(i.unit) + '</i></span></div>' +
+            '<div class="pi-bar"><i class="' + cls + '" style="width:' + pct + '%"></i></div>' +
+            '<div class="pi-foot"><span>' + i.cur + ' / ' + i.total + ' ' + esc(i.unit) + '</span>' +
+            '<span class="stp">每次 +' + i.step + esc(i.unit) + '</span>' +
+            '<span class="badge g" style="margin-left:auto">' + pct + '%</span></div>' +
+            '</div>';
+        }).join('') +
+        '<div class="pi-add" data-add="' + g.id + '">＋ 添加项目</div>' +
+      '</div></div>').join('');
+}
+$('#progGroups').onclick = e => {
+  const add = e.target.closest('[data-add]');
+  if (add){ addProgressItem(add.dataset.add); return; }
+  const card = e.target.closest('.pi');
+  if (card) editProgressItem(card.dataset.g, card.dataset.i);
+};
+function addProgressItem(gid){
+  const g = DB.progress.find(x => x.id === gid);
+  if (!g) return;
+  openForm({
+    title: '添加项目 · ' + g.name,
+    fields: [
+      { k: 'emoji', label: '图标', value: '📌' },
+      { k: 'name', label: '名称' },
+      { k: 'cur', label: '当前值', type: 'number' },
+      { k: 'total', label: '目标值', type: 'number' },
+      { k: 'unit', label: '单位', placeholder: '页 / 集 / km / %' },
+      { k: 'step', label: '每次增加', type: 'number', value: 1 }
+    ],
+    onSave: d => {
+      if (!d.name) return;
+      g.items.push({ id: uid(), emoji: d.emoji || '📌', name: d.name,
+                     cur: Number(d.cur) || 0, total: Number(d.total) || 100,
+                     unit: d.unit || '', step: Number(d.step) || 1 });
+      save(); renderProgress(); toast('已添加');
+    }
+  });
+}
+function editProgressItem(gid, iid){
+  const g = DB.progress.find(x => x.id === gid);
+  if (!g) return;
+  const i = g.items.find(x => x.id === iid);
+  if (!i) return;
+  openForm({
+    title: '编辑项目',
+    fields: [
+      { k: 'emoji', label: '图标' },
+      { k: 'name', label: '名称' },
+      { k: 'cur', label: '当前值', type: 'number' },
+      { k: 'total', label: '目标值', type: 'number' },
+      { k: 'unit', label: '单位' },
+      { k: 'step', label: '每次增加', type: 'number' },
+      { k: 'act', label: '操作', type: 'select', options: [
+        { v: '', t: '仅保存' }, { v: 'inc', t: '按步长 +1 次' },
+        { v: 'dec', t: '按步长 -1 次' }, { v: 'reset', t: '归零' }, { v: 'full', t: '拉满' }] }
+    ],
+    values: i,
+    onSave: d => {
+      i.emoji = d.emoji || '📌';
+      i.name = d.name || i.name;
+      i.cur = Number(d.cur) || 0;
+      i.total = Number(d.total) || 100;
+      i.unit = d.unit || '';
+      i.step = Number(d.step) || 1;
+      if (d.act === 'inc') i.cur += i.step;
+      if (d.act === 'dec') i.cur = Math.max(0, i.cur - i.step);
+      if (d.act === 'reset') i.cur = 0;
+      if (d.act === 'full') i.cur = i.total;
+      save(); renderProgress(); toast('已保存');
+    },
+    onDelete: () => {
+      g.items = g.items.filter(x => x.id !== iid);
+      save(); renderProgress(); toast('已删除');
+    }
+  });
+}
+$('#progManage').onclick = () => {
+  openForm({
+    title: '管理分组',
+    fields: [{ k: 'list', label: '分组（每行一个，格式：图标 名称）',
+               type: 'textarea', hint: '改名字后原有项目会保留' }],
+    values: { list: DB.progress.map(g => (g.emoji || '📁') + ' ' + g.name).join('\n') },
+    onSave: d => {
+      const lines = (d.list || '').split('\n').map(s => s.trim()).filter(Boolean);
+      const next = [];
+      lines.forEach((l, idx) => {
+        const sp = l.indexOf(' ');
+        const emoji = sp > 0 ? l.slice(0, sp) : '📁';
+        const name = sp > 0 ? l.slice(sp + 1).trim() : l;
+        const old = DB.progress[idx];
+        next.push(old && old.name === name ? old
+          : { id: uid(), emoji, name, items: old ? old.items : [] });
+      });
+      if (next.length){ DB.progress = next; save(); renderProgress(); toast('已更新'); }
+      else toast('至少保留一个分组');
+    }
+  });
+};
+
+/* ============================================================
+   导入导出 / 重置
+   ============================================================ */
+$('#btnExport').onclick = e => {
+  e.preventDefault();
+  const blob = new Blob([JSON.stringify(DB, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'dashboard-' + todayStr() + '.json';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  toast('已导出');
+};
+$('#btnImport').onclick = e => { e.preventDefault(); $('#jsonPick').click(); };
+$('#jsonPick').onchange = e => {
+  const f = e.target.files && e.target.files[0];
+  if (!f) return;
+  const fr = new FileReader();
+  fr.onload = () => {
+    try {
+      const j = JSON.parse(fr.result);
+      DB = Object.assign(DEFAULT(), j);
+      save(true); renderAll(); toast('导入成功');
+    } catch (err){ toast('导入失败：文件格式不对'); }
+  };
+  fr.readAsText(f);
+  e.target.value = '';
+};
+$('#btnReset').onclick = e => {
+  e.preventDefault();
+  const b = e.target;
+  if (b.dataset.armed !== '1'){ b.dataset.armed = '1'; b.textContent = '再点一次确认'; return; }
+  localStorage.removeItem(KEY);
+  DB = DEFAULT();
+  save(true); renderAll();
+  b.dataset.armed = ''; b.textContent = '恢复默认';
+  toast('已恢复默认数据');
+};
+
+/* ============================================================
+   主循环 & 初始化
+   ============================================================ */
+function renderAll(){
+  renderBanner();
+  renderCalendar();
+  renderWeather();
+  renderCountdown();
+  renderPomodoro();
+  renderMotto();
+  renderFiles();
+  renderSchedule();
+  renderProgress();
+  $('#footInfo').textContent = STORAGE_OK
+    ? '本机 · 离线运行 · 存储键 ' + KEY
+    : '⚠ 当前环境不允许本地存储（如用 file:// 打开的某些浏览器），改动关掉页面就会丢';
+}
+function tick(){
+  const n = new Date();
+  $('#pomoClock').textContent = pad(n.getHours()) + ':' + pad(n.getMinutes()) + ':' + pad(n.getSeconds());
+  const p = DB.pomodoro;
+  if (p.running){
+    const remain = Math.round((p.endAt - Date.now()) / 1000);
+    if (remain <= 0){ pomoFinish(); }
+    else renderPomodoro();
+  }
+}
+let lastDay = todayStr();
+setInterval(() => {
+  tick();
+  if (todayStr() !== lastDay){      // 跨天自动刷新
+    lastDay = todayStr();
+    renderAll();
+  }
+}, 1000);
+
+load();
+bindList($('#todoList'));
+bindList($('#doneList'));
+bindList($('#eventList'));
+renderAll();
+tick();
+/* 首次打开（或用户没手动指定过城市）自动定位一次，用 IP 兜底，
+   这样即使是从 file:// 打开也能拿到正确城市的天气 */
+if (DB.citySet !== 'manual' && !DB.weather) doLocate(true);
+else fetchWeather(false);
+
+</script>
+</body>
+</html>
